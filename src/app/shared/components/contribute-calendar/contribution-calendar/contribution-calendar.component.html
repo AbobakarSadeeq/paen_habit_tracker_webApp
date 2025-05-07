@@ -1,0 +1,26 @@
+<div class="calendar-container">
+  <div class="calendar">
+    <!-- Month Labels -->
+    <div class="months">
+      <div
+        *ngFor="let label of monthLabels"
+        class="month-label"
+        [style.gridColumn]="label.column"
+      >
+        {{ label.name }}
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid">
+      <div class="week" *ngFor="let week of weeks">
+        <div
+          class="day"
+          *ngFor="let day of week"
+          [ngStyle]="{ 'background-color': day ? getColor(day.count) : 'transparent' }"
+          [title]="day ? (day.date + ': ' + day.count + ' contributions') : ''"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
