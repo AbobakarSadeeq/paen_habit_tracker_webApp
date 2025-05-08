@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-contribution-calendar',
@@ -13,10 +13,17 @@ export class ContributionCalendarComponent {
   weeks: any[][] = [];
   monthLabels: { name: string; column: number }[] = [];
   @Input() contributionCountsWithItsDates: { [key: string]: number } = {};
+  @Input() selectedYear : number = 0;
 
-  ngOnInit() {
-    const startDate = new Date('2025-01-01');
-    const endDate = new Date('2025-12-31');
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedYear'] || changes['contributionCountsWithItsDates']) {
+      this.generateContributionGridForYear(this.selectedYear, this.contributionCountsWithItsDates);
+    }
+  }
+
+  generateContributionGridForYear(year: number, contributionCountsWithItsDates: { [key: string]: number }) : void {
+    const startDate = new Date(`${year.toString()}-01-01`);
+    const endDate = new Date(`${year.toString()}-12-31`);
     const days: any[] = [];
 
     // start check from when month and year become same.
@@ -25,8 +32,8 @@ export class ContributionCalendarComponent {
     for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
       const onlyGettingDateFromISO = d.toISOString().split('T')[0].toString();
 
-      if (this.contributionCountsWithItsDates[onlyGettingDateFromISO]) {
-        const habitsDoneCurrentDayCount = this.contributionCountsWithItsDates[onlyGettingDateFromISO];
+      if (contributionCountsWithItsDates[onlyGettingDateFromISO]) {
+        const habitsDoneCurrentDayCount = contributionCountsWithItsDates[onlyGettingDateFromISO];
 
         days.push({
           date: onlyGettingDateFromISO,
@@ -51,6 +58,7 @@ export class ContributionCalendarComponent {
 
     this.weeks = this.chunkWeeks(days);
     this.generateMonthLabels();
+
   }
 
   chunkWeeks(days: any[]): any[][] {
@@ -86,7 +94,6 @@ export class ContributionCalendarComponent {
 
   generateMonthLabels() {
     this.monthLabels = [];
-
     for (let w = 0; w < this.weeks.length; w++) {
       const firstDay = this.weeks[w].find(d => d); // skip nulls
       if (!firstDay) continue;

@@ -12,10 +12,11 @@ import { ContributionCalendarComponent } from "../../shared/components/contribut
 export class HomeComponent {
 
   allContributionCountsAndWithTheirDatesData: { [key: string]: number } = {};
+  selectedYearContributionGrid: number = 0;
 
   ngOnInit(): void {
 
-     this.allContributionCountsAndWithTheirDatesData = {
+    this.allContributionCountsAndWithTheirDatesData = {
       '2025-01-01': 1,
       '2025-01-02': 2,
       '2025-01-03': 3,
@@ -28,7 +29,7 @@ export class HomeComponent {
       '2025-05-10': 10
     };
 
-
+    this.selectedYearContributionGrid = 2025;
   }
 
 }

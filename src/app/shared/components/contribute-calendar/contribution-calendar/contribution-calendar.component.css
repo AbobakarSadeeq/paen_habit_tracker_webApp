@@ -8,11 +8,12 @@
   flex-direction: column;
   font-family: sans-serif;
   min-width: 800px; /* force horizontal scroll if screen is narrower */
+  max-width: 800px;
 }
 
 .months {
+  grid-template-columns: repeat(50, 1fr);
   display: grid;
-  grid-template-columns: repeat(auto-fill, 14px);
   font-size: 10px;
   color: #888;
   margin-left: 30px;
