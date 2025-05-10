@@ -1,0 +1,96 @@
+<div class="main-container">
+
+  <div class="home-contribution-area">
+
+    <h5 class="home-grid-name">Prograss Grid</h5>
+
+    <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
+      [selectedYear]="selectedYearContributionGrid">
+
+    </app-contribution-calendar>
+
+  </div>
+
+  <div class="habits">
+
+    <!-- habit header -->
+
+    <div class="habit-header">
+
+
+      <div class="left-items-habit-header">
+        <h5 class="habit-header-text">Habits</h5>
+      </div>
+
+
+      <div class="right-items">
+        <button class="btn btn-outline-success habit-add-btn" (click)="openAddHabitModel()"><i
+            class="bi bi-plus"></i>Add Habit</button>
+      </div>
+
+
+    </div>
+
+    <!-- habit body -->
+    <div class="habit-body">
+
+
+      <div *ngFor="let singleHabit of habitList" class="habit-list">
+
+        <div class="single-habit">
+
+          <div class="left-items">
+            <span>{{singleHabit.name}}</span>
+            <span>{{singleHabit.Id}}</span>
+            <span>{{singleHabit.createdAt}}</span>
+          </div>
+
+          <div class="right-items">
+            <span style="color: blue;">Edit</span> &nbsp;
+            <input type="checkbox">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+</div>
+
+
+
+<!-- Add-Habit-Modal -->
+
+<div class="modal fade" #AddHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content add-habit-model-content">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New Habit <i class="bi bi-stars"></i></h1>
+      </div>
+      <div class="modal-body">
+
+        <div class="habit-input-section">
+          <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" />
+          @if (showNewHabitInputValidationMessage) {
+          <span style="color: red;">Please write the habit name.</span>
+
+          }
+        </div>
+
+          <input type="color" name="" id="">
+
+
+      </div>
+      <div class="modal-footer" style="border-top: none !important;">
+        <button type="button" class="btn btn-outline-secondary py-1 px-2" (click)="onCloseHabitModel()">Close</button>
+        <button type="button" class="btn btn-success py-1 px-2" (click)="onAddHabit()">Save Habit</button>
+      </div>
+    </div>
+  </div>
+</div>

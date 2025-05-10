@@ -1,0 +1,68 @@
+.main-container {
+  max-width: 1000px;
+  margin: 3em auto;
+}
+
+.home-contribution-area {
+  max-width: 850px;
+  margin: auto;
+}
+
+.home-grid-name {
+  font-weight: 800;
+}
+
+.habits {
+  max-width: 400px;
+  margin: 3em auto;
+}
+
+.single-habit {
+  padding: 0.5em 0.5em;
+  min-width: 10em;
+  max-width: 25em;
+  height: 3em;
+  border: 0.5px solid white;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+
+
+
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+
+.habit-header-text{
+  font-weight: 800;
+
+}
+
+.habit-add-btn {
+  padding: 0.2em;
+  min-width: 7em;
+}
+
+
+.add-habit-model-content {
+   background-color: #17131a;
+   color:white;
+   border: none;
+
+}
+
+
+.modal-title {
+  font-weight: 900;
+}
+
+.habit-input-section input {
+  background-color: transparent;
+  border-color:rgb(56, 60, 66);
+  color: white;
+  min-width:100%;
+  padding: .3em .4em;
+}
