@@ -28,17 +28,14 @@
   margin-bottom: 1em;
 }
 
-
-
 .habit-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1em;
 }
 
-.habit-header-text{
+.habit-header-text {
   font-weight: 800;
-
 }
 
 .habit-add-btn {
@@ -46,14 +43,11 @@
   min-width: 7em;
 }
 
-
 .add-habit-model-content {
-   background-color: #17131a;
-   color:white;
-   border: none;
-
+  background-color: #17131a;
+  color: white;
+  border: none;
 }
-
 
 .modal-title {
   font-weight: 900;
@@ -61,8 +55,29 @@
 
 .habit-input-section input {
   background-color: transparent;
-  border-color:rgb(56, 60, 66);
+  border-color: rgb(56, 60, 66);
   color: white;
-  min-width:100%;
-  padding: .3em .4em;
+  min-width: 100%;
+  padding: 0.3em 0.4em;
+}
+
+.color-picker-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.color-picker-wrapper input {
+  max-width: 2em !important;
+  border: none;
+  border-radius: 5em;
+  cursor: pointer;
+}
+
+.color-picker-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* ensures clicks go to input */
+  color: black;
 }

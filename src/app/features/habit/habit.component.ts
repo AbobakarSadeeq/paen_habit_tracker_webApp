@@ -4,12 +4,13 @@ import { ContributionCalendarComponent } from "../../shared/components/contribut
 import { FormsModule } from '@angular/forms';
 import { HabitViewModel } from '../../presentation/view-models/habit.view-model';
 import { HabitServiceService } from '../../core/services/habit-service.service';
+import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule],
+  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -22,15 +23,16 @@ export class HabitComponent {
   allContributionCountsAndWithTheirDatesData: { [key: string]: number } = {};
   selectedYearContributionGrid: number = 0;
   newHabitValue: string = "";
-  showNewHabitInputValidationMessage: boolean = false;
+  isNewHabitInputValidate: boolean = false;
   habitList: HabitViewModel[] = [];
+  selectedColor: string = "";
+  isColorSelectValidate: boolean = false;
 
-  constructor(private _habitalService: HabitServiceService) {
+  constructor(private _habitalService: HabitServiceService) { }
 
-  }
+  async ngOnInit(): Promise<void> {
 
-  ngOnInit(): void {
-
+    this.habitList = await this._habitalService.getAllHabitsAsync();
 
     this.allContributionCountsAndWithTheirDatesData = {
       '2025-01-01': 1,
@@ -54,22 +56,25 @@ export class HabitComponent {
 
 
   // add habit model toggles and handlers
-  onAddHabit(): void {
+  async onAddHabit(): Promise<void> {
     if (!this.newHabitValue) {
-      this.showNewHabitInputValidationMessage = true;
+      this.isNewHabitInputValidate = true;
+      return;
+    } else if (!this.selectedColor) {
+      this.isNewHabitInputValidate = false;
+      this.isColorSelectValidate = true;
       return;
     }
 
     let addHabitViewModel: HabitViewModel = {
       Id: 0,
       name: this.newHabitValue,
+      color: this.selectedColor,
       createdAt: new Date().toLocaleString()
     };
+    let addedHabitObj = await this._habitalService.storeHabitAsync(addHabitViewModel);
 
-    this._habitalService.storeHabit(addHabitViewModel);
-
-
-    this.habitList.push(addHabitViewModel);
+    this.habitList.push(addedHabitObj);
 
     this.onCloseHabitModel();
   }
@@ -80,8 +85,10 @@ export class HabitComponent {
 
   onCloseHabitModel(): void {
     this._bootstrapModalInstance.hide();
-    this.showNewHabitInputValidationMessage = false;
+    this.isNewHabitInputValidate = false;
+    this.isColorSelectValidate = false;
     this.newHabitValue = "";
+    this.selectedColor = "";
   }
 
 
