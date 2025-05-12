@@ -4,7 +4,8 @@ import { ContributionCalendarComponent } from "../../shared/components/contribut
 import { FormsModule } from '@angular/forms';
 import { HabitViewModel } from '../../presentation/view-models/habit.view-model';
 import { HabitServiceService } from '../../core/services/habit-service.service';
-import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
+import { ColorPickerDirective } from 'ngx-color-picker';
+import { HabitCompletionService } from '../../core/services/habit-completion.service';
 
 declare var bootstrap: any;
 
@@ -35,26 +36,17 @@ export class HabitComponent {
   selectedColor: string = "";
   isColorSelectValidate: boolean = false;
 
-  constructor(private _habitalService: HabitServiceService) { }
+  constructor(private _habitalService: HabitServiceService,
+     private _habitalCompletionService: HabitCompletionService) { }
 
   async ngOnInit(): Promise<void> {
+    this.selectedYearContributionGrid = 2025;
 
     this.habitList = await this._habitalService.getAllHabitsAsync();
 
-    this.allContributionCountsAndWithTheirDatesData = {
-      '2025-01-01': 1,
-      '2025-01-02': 2,
-      '2025-01-03': 3,
-      '2025-01-04': 4,
-      '2025-01-05': 5,
-      '2025-01-06': 6,
-      '2025-05-06': 2,
-      '2025-01-08': 8,
-      '2025-01-09': 9,
-      '2025-05-10': 10
-    };
-
-    this.selectedYearContributionGrid = 2025;
+    let startDate = `${this.selectedYearContributionGrid}-01-01`;
+    let endDate = `${this.selectedYearContributionGrid}-12-31`;
+    this.allContributionCountsAndWithTheirDatesData = await this._habitalCompletionService.getDataForMainContributionGridAsync(startDate, endDate);
   }
 
   ngAfterViewInit(): void {
@@ -172,3 +164,7 @@ export class HabitComponent {
 
 
 }
+
+
+// whenever a complete habit deleted then i cant find in which day that was done so, i have to resend request to db and modified it
+// whenever a sinngle day habit completion is done or undone then it will be done with sen

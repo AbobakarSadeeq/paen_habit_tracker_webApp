@@ -3,8 +3,8 @@ export class AppDbContext {
   dbConfig() {
     return {
       name: 'HabitDb',
-      version: 1,
-      objectStoresMeta: [this._habitTable()]
+      version: 2,
+      objectStoresMeta: [this._habitTable(), this._habitCompletion()]
     };
   }
 
@@ -18,6 +18,17 @@ export class AppDbContext {
         { name: 'createdAt', keypath: 'createdAt', options: { unique: false } }
       ]
     }
+  }
+
+  private _habitCompletion() {
+    return {
+      store: 'habit_completions',
+      storeConfig: { keyPath: 'Id', autoIncrement: true },
+      storeSchema: [
+        { name: 'doneDate', keypath: 'doneDate', options: { unique: false } },
+        { name: 'habitId', keypath: 'habitId', options: { unique: false } }
+      ]
+    };
   }
 
 }
