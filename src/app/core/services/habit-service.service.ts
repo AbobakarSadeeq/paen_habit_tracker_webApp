@@ -32,5 +32,23 @@ export class HabitServiceService {
     }
   }
 
+  async deleteHabitAsync(habitId: number): Promise<void> {
+    try {
+      await this._habitRepository.deleteHabitByIdFromDbAsync(habitId);
+    } catch (error) {
+      console.error('Error delete habit:', error);
+      throw error;
+    }
+  }
+
+  async updateHabitsAsync(updateHabitViewModel:HabitViewModel): Promise<void> {
+    try {
+      const habitEntity = HabitMapper.ToHabitEntity(updateHabitViewModel);
+      await this._habitRepository.updateHabitOnDbAsync(habitEntity);
+    } catch (error) {
+      console.error('Error update habit:', error);
+      throw error;
+    }
+  }
 
 }

@@ -19,6 +19,13 @@ export class HabitComponent {
   @ViewChild('AddHabitModal') habitModalRef!: ElementRef;
   private _bootstrapModalInstance: any;
 
+  @ViewChild('UpdateHabitModal') updateHabitModalRef!: ElementRef;
+  private _bootstrapUpdateHabitModalInstance: any;
+  selectedHabitId: number = -1;
+
+  @ViewChild('DeleteHabitModal') deleteHabitModalRef!: ElementRef;
+  private _bootstrapDeleteHabitModalInstance: any;
+
 
   allContributionCountsAndWithTheirDatesData: { [key: string]: number } = {};
   selectedYearContributionGrid: number = 0;
@@ -52,6 +59,8 @@ export class HabitComponent {
 
   ngAfterViewInit(): void {
     this._bootstrapModalInstance = new bootstrap.Modal(this.habitModalRef.nativeElement);
+    this._bootstrapUpdateHabitModalInstance = new bootstrap.Modal(this.updateHabitModalRef.nativeElement);
+    this._bootstrapDeleteHabitModalInstance = new bootstrap.Modal(this.deleteHabitModalRef.nativeElement);
   }
 
 
@@ -73,7 +82,6 @@ export class HabitComponent {
       createdAt: new Date().toLocaleString()
     };
     let addedHabitObj = await this._habitalService.storeHabitAsync(addHabitViewModel);
-
     this.habitList.push(addedHabitObj);
 
     this.onCloseHabitModel();
@@ -89,6 +97,77 @@ export class HabitComponent {
     this.isColorSelectValidate = false;
     this.newHabitValue = "";
     this.selectedColor = "";
+  }
+
+  // update habit model
+
+  async onUpdateHabitModel(): Promise<void> {
+    if (!this.newHabitValue) {
+      this.isNewHabitInputValidate = true;
+      return;
+    } else if (!this.selectedColor) {
+      this.isNewHabitInputValidate = false;
+      this.isColorSelectValidate = true;
+      return;
+    }
+
+    const indexInMemoryHabitList = this.habitList.findIndex(singleHabit => singleHabit.Id == this.selectedHabitId);
+    if (indexInMemoryHabitList != -1) {
+      this.habitList[indexInMemoryHabitList].name = this.newHabitValue;
+      this.habitList[indexInMemoryHabitList].color = this.selectedColor;
+    }
+
+    let updateHabitViewModel: HabitViewModel = {
+      Id: this.selectedHabitId,
+      name: this.newHabitValue,
+      color: this.selectedColor,
+      createdAt: this.habitList[indexInMemoryHabitList].createdAt
+    };
+
+
+    this._habitalService.updateHabitsAsync(updateHabitViewModel);
+
+    this.onCloseUpdateHabitModel();
+  }
+
+  openUpdateHabitModel(selectedHabit: HabitViewModel): void {
+    this.selectedHabitId = selectedHabit.Id;
+    this.selectedColor = selectedHabit.color;
+    this.newHabitValue = selectedHabit.name;
+    this._bootstrapUpdateHabitModalInstance.show();
+  }
+
+  onCloseUpdateHabitModel(): void {
+    this._bootstrapUpdateHabitModalInstance.hide();
+    this.isNewHabitInputValidate = false;
+    this.isColorSelectValidate = false;
+    this.newHabitValue = "";
+    this.selectedColor = "";
+    this.selectedHabitId = -1;
+  }
+
+  // delete habit model
+
+  openDeleteHabitModel(): void {
+    this._bootstrapUpdateHabitModalInstance.hide();
+    this._bootstrapDeleteHabitModalInstance.show();
+  }
+
+  onCloseDeleteHabitModel(): void {
+    this._bootstrapDeleteHabitModalInstance.hide();
+    this.isNewHabitInputValidate = false;
+    this.isColorSelectValidate = false;
+    this.newHabitValue = "";
+    this.selectedColor = "";
+    this.selectedHabitId = -1;
+  }
+
+
+  async onDeleteHabitModel(): Promise<void> {
+    const indexInMemoryHabitList = this.habitList.findIndex(singleHabit => singleHabit.Id == this.selectedHabitId);
+    this.habitList.splice(indexInMemoryHabitList, 1);
+    this._habitalService.deleteHabitAsync(this.selectedHabitId);
+    this.onCloseDeleteHabitModel();
   }
 
 
