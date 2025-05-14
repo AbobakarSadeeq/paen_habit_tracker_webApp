@@ -3,4 +3,5 @@ export interface HabitViewModel {
   name: string;
   color: string;
   createdAt: string;
+  isHabitDoneToday:boolean;
 }

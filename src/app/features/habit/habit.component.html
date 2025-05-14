@@ -33,7 +33,7 @@
     </div>
 
     <!-- habit body -->
-    <div class="habit-body">
+    <div class="habit-body"> 
 
 
       <div *ngFor="let singleHabit of habitList" class="habit-list">
@@ -46,7 +46,8 @@
 
           <div class="right-items">
             <span (click)="openUpdateHabitModel(singleHabit)" style="color: blue;">Edit</span> &nbsp;
-            <input type="checkbox">
+            <input type="checkbox" (change)="toggleOfAddingAndDeletingHabitCompletion($event)"
+              [checked]="singleHabit.isHabitDoneToday" [value]="singleHabit.Id" />
           </div>
 
         </div>

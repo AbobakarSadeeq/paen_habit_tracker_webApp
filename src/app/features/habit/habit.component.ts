@@ -37,7 +37,7 @@ export class HabitComponent {
   isColorSelectValidate: boolean = false;
 
   constructor(private _habitalService: HabitServiceService,
-     private _habitalCompletionService: HabitCompletionService) { }
+    private _habitalCompletionService: HabitCompletionService) { }
 
   async ngOnInit(): Promise<void> {
     this.selectedYearContributionGrid = 2025;
@@ -71,7 +71,8 @@ export class HabitComponent {
       Id: 0,
       name: this.newHabitValue,
       color: this.selectedColor,
-      createdAt: new Date().toLocaleString()
+      createdAt: new Date().toLocaleString(),
+      isHabitDoneToday: false
     };
     let addedHabitObj = await this._habitalService.storeHabitAsync(addHabitViewModel);
     this.habitList.push(addedHabitObj);
@@ -113,7 +114,8 @@ export class HabitComponent {
       Id: this.selectedHabitId,
       name: this.newHabitValue,
       color: this.selectedColor,
-      createdAt: this.habitList[indexInMemoryHabitList].createdAt
+      createdAt: this.habitList[indexInMemoryHabitList].createdAt,
+      isHabitDoneToday: this.habitList[indexInMemoryHabitList].isHabitDoneToday
     };
 
 
@@ -162,6 +164,37 @@ export class HabitComponent {
     this.onCloseDeleteHabitModel();
   }
 
+  // add habit_completion
+  async onAddHabitToHabitCompletion(habitFKeyId: number): Promise<void> {
+    await this._habitalCompletionService.addHabitCompletionAsync(habitFKeyId);
+  }
+
+  // delete habit_completion
+
+  async onDeleteHabitToHabitCompletion(habitFKeyId: number): Promise<void> {
+    await this._habitalCompletionService.deleteHabitCompletionAsync(habitFKeyId);
+  }
+
+  async toggleOfAddingAndDeletingHabitCompletion(event: any): Promise<void> {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const habitIdValue = event.target.value;
+    const todayDate = new Date().toISOString().split('T')[0];
+    if (isChecked) {
+      await this.onAddHabitToHabitCompletion(habitIdValue);
+      this.allContributionCountsAndWithTheirDatesData = {
+        ...this.allContributionCountsAndWithTheirDatesData,
+        [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) + 1
+      };
+
+    } else {
+      await this.onDeleteHabitToHabitCompletion(habitIdValue);
+      this.allContributionCountsAndWithTheirDatesData = {
+        ...this.allContributionCountsAndWithTheirDatesData,
+        [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) - 1
+      };
+
+    }
+  }
 
 }
 

@@ -12,18 +12,19 @@ export abstract class HabitMapper {
     };
   }
 
-  public static ToHabitViewModel(entity: Habit): HabitViewModel {
+  public static ToHabitViewModel(entity: Habit, isHabitDoneToday: boolean): HabitViewModel {
     return {
       Id: entity.Id,
       name: entity.name,
       color: entity.color,
-      createdAt: entity.createdAt
+      createdAt: entity.createdAt,
+      isHabitDoneToday: isHabitDoneToday
     };
   }
 
-  public static ToListHabitViewModel(habitList: Habit[]): HabitViewModel[] {
+  public static ToListHabitViewModel(habitList: Habit[], isHabitDoneToday: boolean): HabitViewModel[] {
     return habitList.map(habit =>
-      this.ToHabitViewModel(habit)
+      this.ToHabitViewModel(habit, isHabitDoneToday)
     );
   }
 
