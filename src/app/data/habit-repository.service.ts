@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Habit } from '../core/models/entities/habit';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

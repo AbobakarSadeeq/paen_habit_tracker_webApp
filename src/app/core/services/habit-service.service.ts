@@ -31,9 +31,8 @@ export class HabitServiceService {
       for (let singleHabitCompletion of habitCompletedListToday) {
         let findIndex:number= viewModelHabitList.findIndex(singleHabit => singleHabit.Id == singleHabitCompletion.habitId);
         if (findIndex != -1)
-          viewModelHabitList[findIndex].isHabitDoneToday = true;
+              viewModelHabitList[findIndex].isHabitDoneToday = true;
       }
-      console.log(viewModelHabitList);
       return viewModelHabitList;
     } catch (error) {
       console.error('Error saving habit:', error);

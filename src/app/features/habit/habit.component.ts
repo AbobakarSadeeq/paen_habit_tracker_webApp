@@ -6,12 +6,14 @@ import { HabitViewModel } from '../../presentation/view-models/habit.view-model'
 import { HabitServiceService } from '../../core/services/habit-service.service';
 import { ColorPickerDirective } from 'ngx-color-picker';
 import { HabitCompletionService } from '../../core/services/habit-completion.service';
+import { DateTimePicker } from '../../shared/utils/dateTime-picker';
+import { RouterModule } from '@angular/router';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective],
+  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -179,7 +181,7 @@ export class HabitComponent {
     const isChecked = (event.target as HTMLInputElement).checked;
     const habitIdValue = event.target.value;
     const parseToIntOfHabitId = parseInt(habitIdValue);
-    const todayDate = new Date().toISOString().split('T')[0];
+    const todayDate = DateTimePicker.getLocalTodayDateOnly();
     if (isChecked) {
       await this.onAddHabitToHabitCompletion(parseToIntOfHabitId);
       this.allContributionCountsAndWithTheirDatesData = {
@@ -198,7 +200,3 @@ export class HabitComponent {
   }
 
 }
-
-
-// whenever a complete habit deleted then i cant find in which day that was done so, i have to resend request to db and modified it
-// whenever a sinngle day habit completion is done or undone then it will be done with sen

@@ -30,13 +30,13 @@ export class ContributionCalendarComponent {
     //
 
     for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-      const onlyGettingDateFromISO = d.toISOString().split('T')[0].toString();
+      const onlyGettingDate = d.toLocaleDateString('sv-SE');
 
-      if (contributionCountsWithItsDates[onlyGettingDateFromISO]) {
-        const habitsDoneCurrentDayCount = contributionCountsWithItsDates[onlyGettingDateFromISO];
+      if (contributionCountsWithItsDates[onlyGettingDate]) {
+        const habitsDoneCurrentDayCount = contributionCountsWithItsDates[onlyGettingDate];
 
         days.push({
-          date: onlyGettingDateFromISO,
+          date: onlyGettingDate,
           count: habitsDoneCurrentDayCount, // here assign how much contribution did happen on that day
           day: d.getDay(),
           month: d.getMonth()
@@ -47,7 +47,7 @@ export class ContributionCalendarComponent {
 
       // non contributation happens in this day
       days.push({
-        date: onlyGettingDateFromISO,
+        date: onlyGettingDate,
         count: 0,
         day: d.getDay(),
         month: d.getMonth()

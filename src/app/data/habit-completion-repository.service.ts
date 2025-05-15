@@ -14,6 +14,7 @@ export class HabitCompletionRepositoryService {
   async addHabitCompletionOnDbAsync(habitId: number): Promise<void> {
     await firstValueFrom(this._dbContext.add('habit_completions', {
       doneDate: DateTimePicker.getLocalTodayDateOnly(),
+      // doneDate: '2025-05-14',
       habitId: habitId
     }));
   }
@@ -34,12 +35,25 @@ export class HabitCompletionRepositoryService {
     ));
   }
 
-  async deleteHabitCompletionByHabitFkIdFromDbAsync(fKeyHabitId: number): Promise<void> {
-    return await firstValueFrom(this._dbContext.deleteAllByIndex(
-      'habit_completions',
-      'habitId',
-      IDBKeyRange.only(fKeyHabitId)
-    ));
+  async deleteHabitCompletionByHabitFkAndTodayDateIdFromDbAsync(habitId: number): Promise<void> {
+    let onlyTodayDateHabitCompletionList: HabitCompletion[] = await this.getHabitCompletionListFromDbOfTodayDateAsync();
+
+    let findIndexOfTodayByDateDoneCompletionId = onlyTodayDateHabitCompletionList.findIndex(
+      singleHabitCompletion => singleHabitCompletion.habitId === habitId
+    );
+
+    if (findIndexOfTodayByDateDoneCompletionId !== -1) {
+      let completionHabitIdOfTodayDateThatSpecificHabitId = onlyTodayDateHabitCompletionList[findIndexOfTodayByDateDoneCompletionId].Id;
+
+      return await firstValueFrom(
+        this._dbContext.deleteByKey(
+          'habit_completions',
+          completionHabitIdOfTodayDateThatSpecificHabitId // Just the primary key value
+        )
+      );
+    } else {
+      throw new Error('No matching habit completion found for today and the given habitId.');
+    }
   }
 
   async getHabitCompletionListFromDbOfTodayDateAsync(): Promise<HabitCompletion[]> {
@@ -52,14 +66,13 @@ export class HabitCompletionRepositoryService {
 
   // get the streak of the habit completion below methods.
 
-  getSingleOfHabitCompletionStreakFromDbAsync(habitId: number): Observable<any> {
-    return new Observable<any>((subscriber) => {
+  async getSingleHabitStreakHabitCompletionFromDbAsync(habitId: number): Promise<object> {
+    return await firstValueFrom(new Observable<Object>((subscriber) => {
       let habitWithItsStreakResult = {
         habitId: habitId,
         streak: 0,
       };
-
-      let localVaraiblesObj = {
+      let localVariablesObj = { // here i have used the reference type and it works like c# ref.
         startStreakFromTodayDate: DateTimePicker.getLocalTodayDateOnly(),
         reducingOneDayDate: DateTimePicker.getLocalTodayDateOnly(),
         isTodayHabitCompletionCheckedYet: false,
@@ -75,39 +88,35 @@ export class HabitCompletionRepositoryService {
       }).subscribe({
         next: (cursor: any) => {
           if (cursor) {
-            habitWithItsStreakResult = this._computingStreaks(cursor.value, habitWithItsStreakResult, localVaraiblesObj);
+            this._computingStreaks(cursor.value, habitWithItsStreakResult, localVariablesObj);
             cursor.continue();
           }
         },
         complete: () => {
           // Cursor iteration done
           console.log('cursor completed');
-          console.log(habitWithItsStreakResult);
           subscriber.next(habitWithItsStreakResult);
-          console.log(localVaraiblesObj);
           subscriber.complete();
         },
         error: (err) => subscriber.error(err),
       });
-    });
+    }));
 
   }
 
 
 
-  _computingStreaks(reverseSingleHabitCompletionSingleRow: any, initialValue: any, localVaraiblesObj:any): any {
-    let habitWithItsStreakResult = initialValue;
-
+  _computingStreaks(reverseSingleHabitCompletionSingleRow: any, habitWithItsStreakResult: any, localVariablesObj: any): void {
     // let singleRow: any = cursor.value; // start from decsending order i mean from last row iteration
     let singleDayHabitCompletionRowFromDb: any = reverseSingleHabitCompletionSingleRow; // start from decsending order i mean from last row iteration
-    if (!localVaraiblesObj.isTodayHabitCompletionCheckedYet) {
-      const isTodayCurrentHabitCompletionFoundedOnDb = localVaraiblesObj.startStreakFromTodayDate == singleDayHabitCompletionRowFromDb.doneDate;
+    if (!localVariablesObj.isTodayHabitCompletionCheckedYet) {
+      const isTodayCurrentHabitCompletionFoundedOnDb = localVariablesObj.startStreakFromTodayDate == singleDayHabitCompletionRowFromDb.doneDate;
       if (isTodayCurrentHabitCompletionFoundedOnDb) {
         habitWithItsStreakResult.streak += 1;
-        localVaraiblesObj.todayStreakDone = true;
+        localVariablesObj.todayStreakDone = true;
       }
       // then ignore it and not consider to break the streak yet because there still a chance that user do it yestarday a task habit done.
-      localVaraiblesObj.isTodayHabitCompletionCheckedYet = true;
+      localVariablesObj.isTodayHabitCompletionCheckedYet = true;
     }
 
 
@@ -115,16 +124,16 @@ export class HabitCompletionRepositoryService {
     // yestarday must be present in habit completion and if not then it means streak breaked.
     // if it is present then streak will live.
     // if isItAssignDoneDateOfYestarday == true then it means we are on yestarday date start and checking it that is it streak alive yestarday
-    let isItAssignDoneDateOfYestarday = singleDayHabitCompletionRowFromDb.doneDate != localVaraiblesObj.startStreakFromTodayDate;
+    let isItAssignDoneDateOfYestarday = singleDayHabitCompletionRowFromDb.doneDate != localVariablesObj.startStreakFromTodayDate;
     if (isItAssignDoneDateOfYestarday) {
 
       // get ready the date for consective from today dates.
-      const reduceSingleDayFromPreviousReduceDate = new Date(localVaraiblesObj.reducingOneDayDate);
+      const reduceSingleDayFromPreviousReduceDate = new Date(localVariablesObj.reducingOneDayDate);
       reduceSingleDayFromPreviousReduceDate.setDate(reduceSingleDayFromPreviousReduceDate.getDate() - 1); // Reduce one day from previous
-      localVaraiblesObj.reducingOneDayDate = reduceSingleDayFromPreviousReduceDate.toLocaleDateString('sv-SE');
+      localVariablesObj.reducingOneDayDate = reduceSingleDayFromPreviousReduceDate.toLocaleDateString('sv-SE');
 
       // if yestarday or yestarday - 1 and on... date found on db then it means streak is live
-      if (localVaraiblesObj.reducingOneDayDate == singleDayHabitCompletionRowFromDb.doneDate) {
+      if (localVariablesObj.reducingOneDayDate == singleDayHabitCompletionRowFromDb.doneDate) {
         habitWithItsStreakResult.streak = habitWithItsStreakResult.streak + 1;
       } else {
         // streak is going to break
@@ -135,20 +144,18 @@ export class HabitCompletionRepositoryService {
         if (daysGap == 1 && habitWithItsStreakResult.streak == 1) {
 
           // that means its yestarday done and today not yet done habit task so, still true
-          if (localVaraiblesObj.todayStreakDone == false && habitWithItsStreakResult.streak == 1) {
-            localVaraiblesObj.yestardayStreakDone = true;
+          if (localVariablesObj.todayStreakDone == false && habitWithItsStreakResult.streak == 1) {
+            localVariablesObj.yestardayStreakDone = true;
           }
 
-          if (!localVaraiblesObj.todayStreakDone && !localVaraiblesObj.yestardayStreakDone) {
+          if (!localVariablesObj.todayStreakDone && !localVariablesObj.yestardayStreakDone) {
             habitWithItsStreakResult.streak = 0;
           }
 
         }
-        return habitWithItsStreakResult;
+        return;
       }
     }
-    return habitWithItsStreakResult;
-
   }
 
   _getDaysDifference(date1: string, date2: string): number {
