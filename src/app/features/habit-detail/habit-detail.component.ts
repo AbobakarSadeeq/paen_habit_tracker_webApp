@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, Inject } from '@angular/core';
 import { HabitCompletionService } from '../../core/services/habit-completion.service';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-habit-detail',
@@ -10,9 +10,9 @@ import { HabitCompletionService } from '../../core/services/habit-completion.ser
 })
 export class HabitDetailComponent {
 
-  selectedHabitStreak : any = {}
+  selectedHabitStreak: any = {}
 
-  constructor(private _habitCompletionService: HabitCompletionService, private _routeActivate: ActivatedRoute) { }
+  constructor(private _habitCompletionService: HabitCompletionService, @Inject(ActivatedRoute) private _routeActivate: ActivatedRoute) { }
 
   async ngOnInit(): Promise<void> {
     let habitId: string = this._routeActivate.snapshot.params['Id'];
