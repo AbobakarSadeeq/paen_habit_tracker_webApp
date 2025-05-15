@@ -178,16 +178,17 @@ export class HabitComponent {
   async toggleOfAddingAndDeletingHabitCompletion(event: any): Promise<void> {
     const isChecked = (event.target as HTMLInputElement).checked;
     const habitIdValue = event.target.value;
+    const parseToIntOfHabitId = parseInt(habitIdValue);
     const todayDate = new Date().toISOString().split('T')[0];
     if (isChecked) {
-      await this.onAddHabitToHabitCompletion(habitIdValue);
+      await this.onAddHabitToHabitCompletion(parseToIntOfHabitId);
       this.allContributionCountsAndWithTheirDatesData = {
         ...this.allContributionCountsAndWithTheirDatesData,
         [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) + 1
       };
 
     } else {
-      await this.onDeleteHabitToHabitCompletion(habitIdValue);
+      await this.onDeleteHabitToHabitCompletion(parseToIntOfHabitId);
       this.allContributionCountsAndWithTheirDatesData = {
         ...this.allContributionCountsAndWithTheirDatesData,
         [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) - 1
