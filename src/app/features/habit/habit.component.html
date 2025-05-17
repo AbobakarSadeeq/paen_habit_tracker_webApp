@@ -5,7 +5,8 @@
     <h5 class="home-grid-name">Prograss Grid</h5>
 
     <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
-      [selectedYear]="selectedYearContributionGrid">
+      [selectedYear]="selectedYearContributionGrid"
+      [contributeColors]="['#0d1117', '#033a16', '#196c2e', '#2ea043', '#56d364']">
 
     </app-contribution-calendar>
 
@@ -45,8 +46,9 @@
           </div>
 
           <div class="right-items">
-            <a [routerLink]="['/habit', singleHabit.Id]" >Detail</a> &nbsp;
-            <span (click)="openUpdateHabitModel(singleHabit)" style="color: rgb(12, 109, 251);cursor: pointer;text-decoration: underline;">Edit</span> &nbsp;
+            <a [routerLink]="['/habit', singleHabit.Id]">Detail</a> &nbsp;
+            <span (click)="openUpdateHabitModel(singleHabit)"
+              style="color: rgb(12, 109, 251);cursor: pointer;text-decoration: underline;">Edit</span> &nbsp;
             <input type="checkbox" (change)="toggleOfAddingAndDeletingHabitCompletion($event)"
               [checked]="singleHabit.isHabitDoneToday" [value]="singleHabit.Id" />
           </div>

@@ -3,11 +3,11 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ContributionCalendarComponent } from "../../shared/components/contribute-calendar/contribution-calendar/contribution-calendar.component";
 import { FormsModule } from '@angular/forms';
 import { HabitViewModel } from '../../presentation/view-models/habit.view-model';
-import { HabitServiceService } from '../../core/services/habit-service.service';
 import { ColorPickerDirective } from 'ngx-color-picker';
 import { HabitCompletionService } from '../../core/services/habit-completion.service';
 import { DateTimePicker } from '../../shared/utils/dateTime-picker';
 import { RouterModule } from '@angular/router';
+import { HabitService } from '../../core/services/habit.service';
 
 declare var bootstrap: any;
 
@@ -38,11 +38,11 @@ export class HabitComponent {
   selectedColor: string = "";
   isColorSelectValidate: boolean = false;
 
-  constructor(private _habitalService: HabitServiceService,
+  constructor(private _habitalService: HabitService,
     private _habitalCompletionService: HabitCompletionService) { }
 
   async ngOnInit(): Promise<void> {
-    this.selectedYearContributionGrid = 2025;
+    this.selectedYearContributionGrid = new Date().getFullYear();
 
     this.habitList = await this._habitalService.getAllHabitsAsync();
 

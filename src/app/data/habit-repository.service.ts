@@ -11,7 +11,7 @@ export class HabitRepositoryService {
   constructor(private _dbContext: NgxIndexedDBService) { }
 
   async saveHabitOnDbAsync(habitEntity: Habit): Promise<Habit> {
-    const storeData:any = await firstValueFrom(this._dbContext.add('habits', {
+    const storeData: any = await firstValueFrom(this._dbContext.add('habits', {
       name: habitEntity.name,
       color: habitEntity.color,
       createdAt: habitEntity.createdAt
@@ -27,6 +27,11 @@ export class HabitRepositoryService {
 
   async getAllHabitsFromDbAsync(): Promise<Habit[]> {
     const habits = await firstValueFrom(this._dbContext.getAll<Habit>('habits'));
+    return habits;
+  }
+
+  async getHabitFromDbByIdAsync(habitId: number): Promise<Habit> {
+    const habits = await firstValueFrom(this._dbContext.getByID<Habit>('habits', habitId));
     return habits;
   }
 

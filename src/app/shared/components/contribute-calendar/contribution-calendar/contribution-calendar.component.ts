@@ -14,6 +14,7 @@ export class ContributionCalendarComponent {
   monthLabels: { name: string; column: number }[] = [];
   @Input() contributionCountsWithItsDates: { [key: string]: number } = {};
   @Input() selectedYear : number = 0;
+  @Input() contributeColors : string[] = [];
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedYear'] || changes['contributionCountsWithItsDates']) {
@@ -88,7 +89,7 @@ export class ContributionCalendarComponent {
   }
 
   getColor(count: number): string {
-    const colors = ['#0d1117', '#033a16', '#196c2e', '#2ea043', '#56d364'];
+    const colors = [...this.contributeColors];
     return colors[Math.min(count, colors.length - 1)];
   }
 

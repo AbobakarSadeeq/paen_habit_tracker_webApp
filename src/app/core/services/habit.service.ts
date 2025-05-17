@@ -3,11 +3,13 @@ import { HabitViewModel } from '../../presentation/view-models/habit.view-model'
 import { HabitMapper } from '../mapping/habit.mapper';
 import { HabitRepositoryService } from '../../data/habit-repository.service';
 import { HabitCompletionRepositoryService } from '../../data/habit-completion-repository.service';
+import { Habit } from '../models/entities/habit';
+import { HabitCompletion } from '../models/entities/habit-completion';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HabitServiceService {
+export class HabitService {
 
   constructor(private _habitRepository: HabitRepositoryService, private _habitCompletionRepository: HabitCompletionRepositoryService) { }
 
@@ -29,9 +31,9 @@ export class HabitServiceService {
       let viewModelHabitList = HabitMapper.ToListHabitViewModel(habitList, false);
       var habitCompletedListToday = await this._habitCompletionRepository.getHabitCompletionListFromDbOfTodayDateAsync();
       for (let singleHabitCompletion of habitCompletedListToday) {
-        let findIndex:number= viewModelHabitList.findIndex(singleHabit => singleHabit.Id == singleHabitCompletion.habitId);
+        let findIndex: number = viewModelHabitList.findIndex(singleHabit => singleHabit.Id == singleHabitCompletion.habitId);
         if (findIndex != -1)
-              viewModelHabitList[findIndex].isHabitDoneToday = true;
+          viewModelHabitList[findIndex].isHabitDoneToday = true;
       }
       return viewModelHabitList;
     } catch (error) {
@@ -57,6 +59,23 @@ export class HabitServiceService {
       console.error('Error update habit:', error);
       throw error;
     }
+  }
+
+  async getHabitByIdAsync(habitId: number): Promise<HabitViewModel> {
+    let entity: Habit = await this._habitRepository.getHabitFromDbByIdAsync(habitId);
+    let listOfTodayAllHabitCompletion: HabitCompletion[] = await this._habitCompletionRepository.getHabitCompletionListFromDbOfTodayDateAsync();
+    let findIndexOfTodayByHabitIdFkey = listOfTodayAllHabitCompletion.findIndex(
+      singleHabitCompletion => singleHabitCompletion.habitId === habitId
+    );
+    let habitViewModel: HabitViewModel;
+
+     // if habit completion found on db then it means that today habit is checked and make it true otherwise false because it is not yet done.
+    if (findIndexOfTodayByHabitIdFkey !== -1)
+      habitViewModel = HabitMapper.ToHabitViewModel(entity, true);
+    else
+      habitViewModel = HabitMapper.ToHabitViewModel(entity, false);
+
+    return habitViewModel;
   }
 
 }

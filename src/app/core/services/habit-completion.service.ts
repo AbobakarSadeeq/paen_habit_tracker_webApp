@@ -20,6 +20,12 @@ export class HabitCompletionService {
     return grouped;
   }
 
+
+  async getDataForSingleHabitContributionGridByHabitIdAndSelectedYearAsync(habitId: number, yearSelected: string): Promise<{ [key: string]: number }> {
+    const habitCompletionList = await this._habitCompletionRepository.getSelectedHabitContributionDataFromDbByHabitIdAndSelectedYearAsync(habitId, yearSelected);
+    return habitCompletionList;
+  }
+
   private _groupBySameDateWithCountsOfHabitCompletion(habitCompletionList: HabitCompletion[]): { [key: string]: number } {
     return habitCompletionList.reduce((acc: Record<string, number>, item: any) => {
       acc[item.doneDate] = (acc[item.doneDate] || 0) + 1;
@@ -41,8 +47,8 @@ export class HabitCompletionService {
     return habitCompletionViewModel;
   }
 
-  async getSelectedHabitStreak(habitId:number) : Promise<object> {
-   return await this._habitCompletionRepository.getSingleHabitStreakHabitCompletionFromDbAsync(habitId);
+  async getSelectedHabitStreak(habitId: number): Promise<object> {
+    return await this._habitCompletionRepository.getSingleHabitStreakHabitCompletionFromDbAsync(habitId);
   }
 
 }
