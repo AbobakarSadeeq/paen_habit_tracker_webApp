@@ -81,3 +81,21 @@
   pointer-events: none; /* ensures clicks go to input */
   color: black;
 }
+
+.spinner-overlay {
+  position: fixed; /* Stay above all content */
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  background: rgba(
+    255,
+    255,
+    255,
+    0.6
+  ); /* Optional semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it's on top */
+}

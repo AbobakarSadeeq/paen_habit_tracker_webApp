@@ -8,12 +8,13 @@ import { HabitCompletionService } from '../../core/services/habit-completion.ser
 import { DateTimePicker } from '../../shared/utils/dateTime-picker';
 import { RouterModule } from '@angular/router';
 import { HabitService } from '../../core/services/habit.service';
+import { SpinnerComponent } from "../../shared/components/spinner/spinner.component";
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule],
+  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule, SpinnerComponent],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -37,11 +38,13 @@ export class HabitComponent {
   habitList: HabitViewModel[] = [];
   selectedColor: string = "";
   isColorSelectValidate: boolean = false;
+  showSpinner = false;
 
   constructor(private _habitalService: HabitService,
     private _habitalCompletionService: HabitCompletionService) { }
 
   async ngOnInit(): Promise<void> {
+    this.showSpinner = true;
     this.selectedYearContributionGrid = new Date().getFullYear();
 
     this.habitList = await this._habitalService.getAllHabitsAsync();
@@ -49,6 +52,9 @@ export class HabitComponent {
     let startDate = `${this.selectedYearContributionGrid}-01-01`;
     let endDate = `${this.selectedYearContributionGrid}-12-31`;
     this.allContributionCountsAndWithTheirDatesData = await this._habitalCompletionService.getDataForMainContributionGridAsync(startDate, endDate);
+
+
+    this.terminateSpinner();
   }
 
   ngAfterViewInit(): void {
@@ -197,6 +203,12 @@ export class HabitComponent {
       };
 
     }
+  }
+
+  terminateSpinner(): void {
+    setTimeout(() => {
+      this.showSpinner = false;
+    }, 500)
   }
 
 }

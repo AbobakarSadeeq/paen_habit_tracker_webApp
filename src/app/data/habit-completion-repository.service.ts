@@ -94,6 +94,7 @@ export class HabitCompletionRepositoryService {
           } else {
             // if selected year founded like 2023 then below condition will become true
             // if current year is not equal to selected year then start the iteration from that year and cancel when it become - 1
+
             if (singleRow.doneDate.startsWith(yearSelected)) { // first it will iterate till current year is completed.
               selectedHabitWithTheirDatesContribution[singleRow.doneDate] = 1;
               cursor.continue(); // Continue only if matched
@@ -101,7 +102,9 @@ export class HabitCompletionRepositoryService {
             } else {
               // when that yearSelected Founded on db and then not found again then it means its iteration is done isSelectedYearIterationDone will become true
               if (!isSelectedYearIterationDone) {
-                if ((parseInt(yearSelected) - parseInt(currentYear)) > 0) {
+                let yearSelectedVar = parseInt(yearSelected);
+                let currentYearVar = parseInt(currentYear);
+                if (currentYearVar - yearSelectedVar > 0) {
                   // if yearSelected like 2023 and current is 2025 year then check the difference is it in positive value or more then 0 then it means still dont drop the cursor and we didnt have reached to selected year iteration.
                   cursor.continue(); // Continue only if matched
                 }
