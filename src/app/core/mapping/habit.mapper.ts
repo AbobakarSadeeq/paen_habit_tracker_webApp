@@ -5,7 +5,7 @@ export abstract class HabitMapper {
 
   public static ToHabitEntity(viewModel: HabitViewModel): Habit {
     return {
-      Id: viewModel.Id,
+      Id: viewModel.Id!,
       name: viewModel.name,
       color: viewModel.color,
       createdAt: viewModel.createdAt
@@ -25,6 +25,12 @@ export abstract class HabitMapper {
   public static ToListHabitViewModel(habitList: Habit[], isHabitDoneToday: boolean): HabitViewModel[] {
     return habitList.map(habit =>
       this.ToHabitViewModel(habit, isHabitDoneToday)
+    );
+  }
+
+  public static ToListHabit(habitList: HabitViewModel[]): Habit[] {
+    return habitList.map(habit =>
+      this.ToHabitEntity(habit)
     );
   }
 

@@ -42,6 +42,17 @@ export class HabitService {
     }
   }
 
+  async getAllHabitsOnlyForToExportJsonFileAsync(): Promise<HabitViewModel[]> {
+    let habitList = await this._habitRepository.getAllHabitsFromDbAsync();
+    let viewModelHabitList = HabitMapper.ToListHabitViewModel(habitList, false);
+    viewModelHabitList.forEach(singleHabit => {
+      delete singleHabit.Id;
+      delete singleHabit.isHabitDoneToday;
+    });
+
+    return viewModelHabitList;
+  }
+
   async deleteHabitAsync(habitId: number): Promise<void> {
     try {
       await this._habitRepository.deleteHabitByIdFromDbAsync(habitId);
@@ -69,13 +80,17 @@ export class HabitService {
     );
     let habitViewModel: HabitViewModel;
 
-     // if habit completion found on db then it means that today habit is checked and make it true otherwise false because it is not yet done.
+    // if habit completion found on db then it means that today habit is checked and make it true otherwise false because it is not yet done.
     if (findIndexOfTodayByHabitIdFkey !== -1)
       habitViewModel = HabitMapper.ToHabitViewModel(entity, true);
     else
       habitViewModel = HabitMapper.ToHabitViewModel(entity, false);
 
     return habitViewModel;
+  }
+
+  async bulkSaveHabitsAsync(bulkHabits: any[]): Promise<void> {
+    await this._habitRepository.bulkSaveHabitsOnDbAsync(bulkHabits);
   }
 
 }

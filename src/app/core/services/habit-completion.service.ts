@@ -26,6 +26,19 @@ export class HabitCompletionService {
     return habitCompletionList;
   }
 
+  async getAllHabitsCompletionAsync(): Promise<HabitCompletionViewModel[]> {
+    let habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompletionFromDbAsync();
+    let viewModelHabitCompletion = HabitCompletionMapper.ToListHabitCompletionViewModel(habitCompletionList);
+    viewModelHabitCompletion.forEach(singleHabitCompletion => {
+      delete singleHabitCompletion.Id;
+    });
+    return viewModelHabitCompletion;
+  }
+
+  async bulkSaveHabitsCompletionAsync(bulkHabitsCompletion: any[]): Promise<void> {
+    await this._habitCompletionRepository.bulkSaveHabitsCompletionsOnDbAsync(bulkHabitsCompletion);
+  }
+
   private _groupBySameDateWithCountsOfHabitCompletion(habitCompletionList: HabitCompletion[]): { [key: string]: number } {
     return habitCompletionList.reduce((acc: Record<string, number>, item: any) => {
       acc[item.doneDate] = (acc[item.doneDate] || 0) + 1;

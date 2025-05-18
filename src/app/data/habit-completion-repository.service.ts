@@ -35,6 +35,11 @@ export class HabitCompletionRepositoryService {
     ));
   }
 
+  async bulkSaveHabitsCompletionsOnDbAsync(habitCompletionList: any[]): Promise<void> {
+    debugger;
+    await firstValueFrom(this._dbContext.bulkAdd('habit_completions', habitCompletionList));
+  }
+
   async deleteHabitCompletionByHabitFkAndTodayDateIdFromDbAsync(habitId: number): Promise<void> {
     let onlyTodayDateHabitCompletionList: HabitCompletion[] = await this.getHabitCompletionListFromDbOfTodayDateAsync();
 
@@ -62,6 +67,12 @@ export class HabitCompletionRepositoryService {
       'doneDate',
       IDBKeyRange.only(DateTimePicker.getLocalTodayDateOnly())
     ));
+  }
+
+
+  async getAllHabitsCompletionFromDbAsync(): Promise<HabitCompletion[]> {
+    const habitCompletions = await firstValueFrom(this._dbContext.getAll<HabitCompletion>('habit_completions'));
+    return habitCompletions;
   }
 
   async getSelectedHabitContributionDataFromDbByHabitIdAndSelectedYearAsync(habitId: number, yearSelected: string): Promise<{ [key: string]: number }> {

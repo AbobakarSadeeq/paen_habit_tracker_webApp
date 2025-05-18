@@ -5,7 +5,7 @@ export abstract class HabitCompletionMapper {
 
   public static ToHabitCompletionEntity(viewModel: HabitCompletionViewModel): HabitCompletion {
     return {
-      Id: viewModel.Id,
+      Id: viewModel.Id!,
       doneDate: viewModel.doneDate,
       habitId: viewModel.habitId
     };

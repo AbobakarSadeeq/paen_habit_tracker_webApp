@@ -1,5 +1,5 @@
 export interface HabitCompletionViewModel {
-  Id: number;
+  Id?: number;
   doneDate: string;
   habitId: number;
 }

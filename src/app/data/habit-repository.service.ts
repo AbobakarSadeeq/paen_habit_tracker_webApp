@@ -30,6 +30,10 @@ export class HabitRepositoryService {
     return habits;
   }
 
+  async bulkSaveHabitsOnDbAsync(habitList: any[]): Promise<void> {
+    await firstValueFrom(this._dbContext.bulkAdd('habits', habitList));
+  }
+
   async getHabitFromDbByIdAsync(habitId: number): Promise<Habit> {
     const habits = await firstValueFrom(this._dbContext.getByID<Habit>('habits', habitId));
     return habits;

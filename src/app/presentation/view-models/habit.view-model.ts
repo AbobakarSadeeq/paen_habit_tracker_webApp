@@ -1,7 +1,7 @@
 export interface HabitViewModel {
-  Id: number;
+  Id?: number;
   name: string;
   color: string;
   createdAt: string;
-  isHabitDoneToday:boolean;
+  isHabitDoneToday?:boolean;
 }

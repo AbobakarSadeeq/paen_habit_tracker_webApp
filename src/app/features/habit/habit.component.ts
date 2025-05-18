@@ -133,7 +133,7 @@ export class HabitComponent {
   }
 
   openUpdateHabitModel(selectedHabit: HabitViewModel): void {
-    this.selectedHabitId = selectedHabit.Id;
+    this.selectedHabitId = selectedHabit.Id!;
     this.selectedColor = selectedHabit.color;
     this.newHabitValue = selectedHabit.name;
     this._bootstrapUpdateHabitModalInstance.show();
@@ -204,6 +204,64 @@ export class HabitComponent {
 
     }
   }
+
+  // export and import
+
+  async exportHabitJson(): Promise<void> {
+    let allHabitList = await this._habitalService.getAllHabitsOnlyForToExportJsonFileAsync();
+    let allHabitsCompletionList = await this._habitalCompletionService.getAllHabitsCompletionAsync();
+
+    let dict = {
+      'habits': allHabitList,
+      'habitsCompletions': allHabitsCompletionList
+    }
+
+    this._downloadJsonFile(dict);
+  }
+
+  _downloadJsonFile(data: any) {
+    const today = new Date();
+    const dateTime = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}_${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}`;
+    const convertToString = JSON.stringify(data);
+    const blob = new Blob([convertToString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${dateTime}_PaenHabit.json`; // fileName
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async onFileSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      console.log('No file selected.');
+      return;
+    }
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async () => {
+      try {
+        const json = JSON.parse(reader.result as string);
+        console.log('Parsed JSON:', json);
+
+        await this._habitalService.bulkSaveHabitsAsync(json['habits']);
+        await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(json['habitsCompletions']);
+      } catch (err) {
+        console.error('Error parsing JSON:', err);
+      }
+    };
+
+    reader.onerror = () => {
+      console.error('File reading error:', reader.error);
+    };
+
+    reader.readAsText(file);
+  }
+
 
   terminateSpinner(): void {
     setTimeout(() => {
