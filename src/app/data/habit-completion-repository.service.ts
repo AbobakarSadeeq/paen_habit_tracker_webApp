@@ -70,9 +70,43 @@ export class HabitCompletionRepositoryService {
   }
 
 
-  async getAllHabitsCompletionFromDbAsync(): Promise<HabitCompletion[]> {
-    const habitCompletions = await firstValueFrom(this._dbContext.getAll<HabitCompletion>('habit_completions'));
-    return habitCompletions;
+  async getAllHabitsCompleteionForExportingJsonFileFromDbAsync(): Promise<{ [key: string]: any[] }> {
+    return await firstValueFrom(new Observable<{ [key: string]: any[] }>((subscriber) => {
+      let selectedHabitWithTheirHabitsId: { [key: string]: any[] } = {};
+      this._dbContext.openCursorByIndex({
+        storeName: 'habit_completions',
+        indexName: 'habitId',
+      }).subscribe({
+        next: (cursor: any) => {
+          if (!cursor) return;
+          let value = cursor.value;
+          if (selectedHabitWithTheirHabitsId[value.habitId]) {
+            let arr = selectedHabitWithTheirHabitsId[value.habitId];
+            let mapping = {
+              'doneDate': cursor.value.doneDate,
+              'habitId':0
+            }
+            arr.push(mapping);
+          } else {
+            let mapping = {
+              'doneDate': cursor.value.doneDate,
+              'habitId':0
+            }
+            selectedHabitWithTheirHabitsId[value.habitId] = [mapping];
+
+          }
+
+          cursor.continue();
+
+        },
+        complete: () => {
+          subscriber.next(selectedHabitWithTheirHabitsId);
+          subscriber.complete();
+        },
+        error: (err) => subscriber.error(err),
+      });
+    }));
+
   }
 
   async getSelectedHabitContributionDataFromDbByHabitIdAndSelectedYearAsync(habitId: number, yearSelected: string): Promise<{ [key: string]: number }> {

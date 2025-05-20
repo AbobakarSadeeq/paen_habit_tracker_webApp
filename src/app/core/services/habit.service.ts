@@ -42,11 +42,10 @@ export class HabitService {
     }
   }
 
-  async getAllHabitsOnlyForToExportJsonFileAsync(): Promise<HabitViewModel[]> {
+  async getAllHabitsForExportingJsonFileAsync(): Promise<HabitViewModel[]> {
     let habitList = await this._habitRepository.getAllHabitsFromDbAsync();
     let viewModelHabitList = HabitMapper.ToListHabitViewModel(habitList, false);
     viewModelHabitList.forEach(singleHabit => {
-      delete singleHabit.Id;
       delete singleHabit.isHabitDoneToday;
     });
 

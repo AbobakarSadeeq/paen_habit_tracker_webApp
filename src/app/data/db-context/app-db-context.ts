@@ -3,7 +3,7 @@ export class AppDbContext {
   dbConfig() {
     return {
       name: 'HabitDb',
-      version: 2,
+      version: 3,
       objectStoresMeta: [this._habitTable(), this._habitCompletion()]
     };
   }

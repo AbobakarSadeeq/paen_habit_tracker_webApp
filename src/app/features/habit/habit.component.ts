@@ -208,15 +208,21 @@ export class HabitComponent {
   // export and import
 
   async exportHabitJson(): Promise<void> {
-    let allHabitList = await this._habitalService.getAllHabitsOnlyForToExportJsonFileAsync();
-    let allHabitsCompletionList = await this._habitalCompletionService.getAllHabitsCompletionAsync();
+    let allHabitListForExportingFormat: any[] = await this._habitalService.getAllHabitsForExportingJsonFileAsync();
+    let allHabitsCompletionListForExportingFormat = await this._habitalCompletionService.getAllHabitsCompleteionForExportingJsonFileAsync();
+    let exportJsonFileFormateOfHabitsStore: any[] = [];
+    allHabitListForExportingFormat.forEach(singleHabit => {
+      exportJsonFileFormateOfHabitsStore.push(
+        {
+          [singleHabit.createdAt]: {
+            'habit': { 'name': singleHabit.name, 'color': singleHabit.color, 'createdAt': singleHabit.createdAt },
+            'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id]
+          }
+        }
+      );
+    });
 
-    let dict = {
-      'habits': allHabitList,
-      'habitsCompletions': allHabitsCompletionList
-    }
-
-    this._downloadJsonFile(dict);
+    this._downloadJsonFile(exportJsonFileFormateOfHabitsStore);
   }
 
   _downloadJsonFile(data: any) {

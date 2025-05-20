@@ -26,14 +26,11 @@ export class HabitCompletionService {
     return habitCompletionList;
   }
 
-  async getAllHabitsCompletionAsync(): Promise<HabitCompletionViewModel[]> {
-    let habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompletionFromDbAsync();
-    let viewModelHabitCompletion = HabitCompletionMapper.ToListHabitCompletionViewModel(habitCompletionList);
-    viewModelHabitCompletion.forEach(singleHabitCompletion => {
-      delete singleHabitCompletion.Id;
-    });
-    return viewModelHabitCompletion;
+  async getAllHabitsCompleteionForExportingJsonFileAsync(): Promise<Record<string, any[]>> {
+    const habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompleteionForExportingJsonFileFromDbAsync();
+    return habitCompletionList;
   }
+
 
   async bulkSaveHabitsCompletionAsync(bulkHabitsCompletion: any[]): Promise<void> {
     await this._habitCompletionRepository.bulkSaveHabitsCompletionsOnDbAsync(bulkHabitsCompletion);
