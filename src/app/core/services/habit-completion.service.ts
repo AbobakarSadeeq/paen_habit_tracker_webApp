@@ -26,8 +26,8 @@ export class HabitCompletionService {
     return habitCompletionList;
   }
 
-  async getAllHabitsCompleteionForExportingJsonFileAsync(): Promise<Record<string, any[]>> {
-    const habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompleteionForExportingJsonFileFromDbAsync();
+  async getAllHabitsCompleteionForExportingJsonFileAsync(assignPrimaryIdInOrderWiseToHabit:any): Promise<Record<string, any[]>> {
+    const habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompleteionForExportingJsonFileFromDbAsync(assignPrimaryIdInOrderWiseToHabit);
     return habitCompletionList;
   }
 
@@ -61,4 +61,7 @@ export class HabitCompletionService {
     return await this._habitCompletionRepository.getSingleHabitStreakHabitCompletionFromDbAsync(habitId);
   }
 
+   async resetHabitCompletionAsync(): Promise<void> {
+    await this._habitCompletionRepository.resetHabitCompletionTableFromDbAsync();
+  }
 }

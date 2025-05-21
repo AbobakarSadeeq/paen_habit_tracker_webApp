@@ -209,15 +209,26 @@ export class HabitComponent {
 
   async exportHabitJson(): Promise<void> {
     let allHabitListForExportingFormat: any[] = await this._habitalService.getAllHabitsForExportingJsonFileAsync();
-    let allHabitsCompletionListForExportingFormat = await this._habitalCompletionService.getAllHabitsCompleteionForExportingJsonFileAsync();
+
+    // each habitId will be having ascending wise habitId
+    let assignNumberInOrderWiseToHabit: { [key: number]: number } = {};
+    let currentId = 1;
+    allHabitListForExportingFormat.forEach(singleHabit => {
+      if (assignNumberInOrderWiseToHabit[singleHabit.Id] == undefined) {
+        assignNumberInOrderWiseToHabit[singleHabit.Id] = currentId;
+        currentId++
+      }
+    });
+
+    let allHabitsCompletionListForExportingFormat = await this._habitalCompletionService.getAllHabitsCompleteionForExportingJsonFileAsync(assignNumberInOrderWiseToHabit);
     let exportJsonFileFormateOfHabitsStore: any[] = [];
     allHabitListForExportingFormat.forEach(singleHabit => {
       exportJsonFileFormateOfHabitsStore.push(
         {
-          [singleHabit.createdAt]: {
-            'habit': { 'name': singleHabit.name, 'color': singleHabit.color, 'createdAt': singleHabit.createdAt },
-            'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id]
-          }
+          'name': singleHabit.name,
+          'color': singleHabit.color,
+          'createdAt': singleHabit.createdAt,
+          'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id] ?? []
         }
       );
     });
@@ -251,11 +262,27 @@ export class HabitComponent {
 
     reader.onload = async () => {
       try {
-        const json = JSON.parse(reader.result as string);
-        console.log('Parsed JSON:', json);
+        const arrHabitsWithCompletions = JSON.parse(reader.result as string);
+        let resultFormated = this._formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions);
 
-        await this._habitalService.bulkSaveHabitsAsync(json['habits']);
-        await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(json['habitsCompletions']);
+        // remove data from tables
+        await this._habitalService.resetHabitAsync();
+        await this._habitalCompletionService.resetHabitCompletionAsync();
+
+        // stored data in bulk inside habit and return their primary keys where does it stored.
+        let primaryKeysStored = await this._habitalService.bulkSaveHabitsAsync(resultFormated.habits);
+
+        // first any value of primary key == 1, second any value of primary key == 2
+        let habitNumberCompletionWise = 1;
+        for (var singleHabitCompletion of resultFormated['habitCompletions']) {
+          if (singleHabitCompletion['habitId'] == habitNumberCompletionWise) {
+            singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]; // assign primary key value here of to that habit completion where it equals to habitId
+          } else {
+            habitNumberCompletionWise = singleHabitCompletion['habitId'];
+            singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]
+          }
+        }
+        await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(resultFormated.habitCompletions);
       } catch (err) {
         console.error('Error parsing JSON:', err);
       }
@@ -266,6 +293,25 @@ export class HabitComponent {
     };
 
     reader.readAsText(file);
+  }
+
+  _formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions: any[]): any {
+    let result: any = {
+      'habits': [],
+      'habitCompletions': []
+    }
+
+    arrHabitsWithCompletions.forEach(singleHabitWithItsCompletions => {
+      let singleHabit = {
+        'name': singleHabitWithItsCompletions['name'],
+        'color': singleHabitWithItsCompletions['color'],
+        'createdAt': singleHabitWithItsCompletions['createdAt'],
+      }
+      let habitCompletions = [...result['habitCompletions'], ...singleHabitWithItsCompletions['habitCompletions']];
+      result['habits'].push(singleHabit);
+      result['habitCompletions'] = habitCompletions;
+    });
+    return result;
   }
 
 

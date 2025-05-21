@@ -88,8 +88,13 @@ export class HabitService {
     return habitViewModel;
   }
 
-  async bulkSaveHabitsAsync(bulkHabits: any[]): Promise<void> {
-    await this._habitRepository.bulkSaveHabitsOnDbAsync(bulkHabits);
+  async bulkSaveHabitsAsync(bulkHabits: any[]): Promise<number[]> {
+    let primaryKeys: number[] = await this._habitRepository.bulkSaveHabitsOnDbAsync(bulkHabits);
+    return primaryKeys;
+  }
+
+  async resetHabitAsync(): Promise<void> {
+    await this._habitRepository.resetHabitTableFromDbAsync();
   }
 
 }

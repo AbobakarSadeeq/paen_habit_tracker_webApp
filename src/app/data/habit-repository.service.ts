@@ -30,8 +30,8 @@ export class HabitRepositoryService {
     return habits;
   }
 
-  async bulkSaveHabitsOnDbAsync(habitList: any[]): Promise<void> {
-    await firstValueFrom(this._dbContext.bulkAdd('habits', habitList));
+  async bulkSaveHabitsOnDbAsync(habitList: any[]): Promise<number[]> {
+    return await firstValueFrom(this._dbContext.bulkAdd('habits', habitList));
   }
 
   async getHabitFromDbByIdAsync(habitId: number): Promise<Habit> {
@@ -47,5 +47,8 @@ export class HabitRepositoryService {
     firstValueFrom(this._dbContext.update('habits', updateHabit));
   }
 
+  async resetHabitTableFromDbAsync(): Promise<void> {
+    await firstValueFrom(this._dbContext.clear('habits'));
+  }
 
 }

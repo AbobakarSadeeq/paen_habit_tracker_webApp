@@ -36,7 +36,6 @@ export class HabitCompletionRepositoryService {
   }
 
   async bulkSaveHabitsCompletionsOnDbAsync(habitCompletionList: any[]): Promise<void> {
-    debugger;
     await firstValueFrom(this._dbContext.bulkAdd('habit_completions', habitCompletionList));
   }
 
@@ -70,7 +69,7 @@ export class HabitCompletionRepositoryService {
   }
 
 
-  async getAllHabitsCompleteionForExportingJsonFileFromDbAsync(): Promise<{ [key: string]: any[] }> {
+  async getAllHabitsCompleteionForExportingJsonFileFromDbAsync(assignPrimaryIdInOrderWiseToHabit: any): Promise<{ [key: string]: any[] }> {
     return await firstValueFrom(new Observable<{ [key: string]: any[] }>((subscriber) => {
       let selectedHabitWithTheirHabitsId: { [key: string]: any[] } = {};
       this._dbContext.openCursorByIndex({
@@ -84,13 +83,13 @@ export class HabitCompletionRepositoryService {
             let arr = selectedHabitWithTheirHabitsId[value.habitId];
             let mapping = {
               'doneDate': cursor.value.doneDate,
-              'habitId':0
+              'habitId': assignPrimaryIdInOrderWiseToHabit[value.habitId]
             }
             arr.push(mapping);
           } else {
             let mapping = {
               'doneDate': cursor.value.doneDate,
-              'habitId':0
+              'habitId': assignPrimaryIdInOrderWiseToHabit[value.habitId]
             }
             selectedHabitWithTheirHabitsId[value.habitId] = [mapping];
 
@@ -176,6 +175,10 @@ export class HabitCompletionRepositoryService {
       });
 
     }));
+  }
+
+  async resetHabitCompletionTableFromDbAsync(): Promise<void> {
+    await firstValueFrom(this._dbContext.clear('habit_completions'));
   }
 
   // get the streak of the habit completion below methods.
