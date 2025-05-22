@@ -60,6 +60,15 @@ export class HabitCompletionRepositoryService {
     }
   }
 
+  async deleteAllSingleHabitCompletionByHabitIdFkFromDbAsync(habitId: number): Promise<void> {
+    return await firstValueFrom(
+      this._dbContext.deleteAllByIndex(
+        'habit_completions',
+        'habitId',
+        habitId // Just the foreign key value
+      ));
+  }
+
   async getHabitCompletionListFromDbOfTodayDateAsync(): Promise<HabitCompletion[]> {
     return await firstValueFrom(this._dbContext.getAllByIndex(
       'habit_completions',

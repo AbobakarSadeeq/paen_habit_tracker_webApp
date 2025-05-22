@@ -82,7 +82,7 @@
   color: black;
 }
 
-.spinner-overlay {
+.import-done-message-overlay {
   position: fixed; /* Stay above all content */
   top: 0;
   left: 0;

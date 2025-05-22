@@ -47,8 +47,12 @@ export class HabitCompletionService {
     await this._habitCompletionRepository.addHabitCompletionOnDbAsync(habitFKeyId);
   }
 
-  async deleteHabitCompletionAsync(habitFKeyId: number): Promise<void> {
+  async deleteHabitCompletionOfTodayDayAsync(habitFKeyId: number): Promise<void> {
     await this._habitCompletionRepository.deleteHabitCompletionByHabitFkAndTodayDateIdFromDbAsync(habitFKeyId);
+  }
+
+  async deleteAllSingleHabitCompletionsbyHabitIdAsync(habitFKeyId: number): Promise<void> {
+    await this._habitCompletionRepository.deleteAllSingleHabitCompletionByHabitIdFkFromDbAsync(habitFKeyId);
   }
 
   async getHabitCompletionListOfTodayDateAsync(): Promise<HabitCompletionViewModel[]> {

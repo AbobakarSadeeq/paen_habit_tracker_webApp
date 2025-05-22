@@ -8,13 +8,14 @@ import { HabitCompletionService } from '../../core/services/habit-completion.ser
 import { DateTimePicker } from '../../shared/utils/dateTime-picker';
 import { RouterModule } from '@angular/router';
 import { HabitService } from '../../core/services/habit.service';
-import { SpinnerComponent } from "../../shared/components/spinner/spinner.component";
+import { DataSharingService } from '../../shared/services/data-sharing.service';
+import { ImportHabitsDoneMessageComponent } from "../../shared/components/import-habits-done-message/import-habits-done-message.component";
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule, SpinnerComponent],
+  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule, ImportHabitsDoneMessageComponent],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -38,13 +39,37 @@ export class HabitComponent {
   habitList: HabitViewModel[] = [];
   selectedColor: string = "";
   isColorSelectValidate: boolean = false;
-  showSpinner = false;
+  showImportDoneMessage: boolean = false;
 
   constructor(private _habitService: HabitService,
-    private _habitalCompletionService: HabitCompletionService) {}
+    private _habitalCompletionService: HabitCompletionService,
+    private _dataSharing: DataSharingService) { }
 
   async ngOnInit(): Promise<void> {
-    this.showSpinner = true;
+
+    this._dataSharing.refreshHabitsAfterImport.subscribe(async (value) => {
+      if (value) {
+        await this._initializeHabitsAsync();
+
+        setTimeout(() => {
+          this.showImportDoneMessage = true;
+        }, 1000)
+
+        setTimeout(() => {
+          this.showImportDoneMessage = false;
+        }, 4000)
+
+        this._dataSharing.refreshHabitsAfterImport.next(false);
+
+      }
+    });
+
+    await this._initializeHabitsAsync();
+
+  }
+
+  async _initializeHabitsAsync(): Promise<void> {
+    this._dataSharing.showSpinnerSubject.next(true);
     this.selectedYearContributionGrid = new Date().getFullYear();
 
     this.habitList = await this._habitService.getAllHabitsAsync();
@@ -52,9 +77,7 @@ export class HabitComponent {
     let startDate = `${this.selectedYearContributionGrid}-01-01`;
     let endDate = `${this.selectedYearContributionGrid}-12-31`;
     this.allContributionCountsAndWithTheirDatesData = await this._habitalCompletionService.getDataForMainContributionGridAsync(startDate, endDate);
-
-
-    this.terminateSpinner();
+    this._dataSharing.showSpinnerSubject.next(false);
   }
 
   ngAfterViewInit(): void {
@@ -166,10 +189,17 @@ export class HabitComponent {
 
 
   async onDeleteHabitModel(): Promise<void> {
+    this._dataSharing.showSpinnerSubject.next(true);
     const indexInMemoryHabitList = this.habitList.findIndex(singleHabit => singleHabit.Id == this.selectedHabitId);
     this.habitList.splice(indexInMemoryHabitList, 1);
-    this._habitService.deleteHabitAsync(this.selectedHabitId);
+    await this._habitService.deleteHabitAsync(this.selectedHabitId);
+    await this._habitalCompletionService.deleteAllSingleHabitCompletionsbyHabitIdAsync(this.selectedHabitId);
+    let startDate = `${this.selectedYearContributionGrid}-01-01`;
+    let endDate = `${this.selectedYearContributionGrid}-12-31`;
+    this.allContributionCountsAndWithTheirDatesData = await this._habitalCompletionService.getDataForMainContributionGridAsync(startDate, endDate);
     this.onCloseDeleteHabitModel();
+    this._dataSharing.showSpinnerSubject.next(false);
+
   }
 
   // add habit_completion
@@ -180,7 +210,7 @@ export class HabitComponent {
   // delete habit_completion
 
   async onDeleteHabitToHabitCompletion(habitFKeyId: number): Promise<void> {
-    await this._habitalCompletionService.deleteHabitCompletionAsync(habitFKeyId);
+    await this._habitalCompletionService.deleteHabitCompletionOfTodayDayAsync(habitFKeyId);
   }
 
   async toggleOfAddingAndDeletingHabitCompletion(event: any): Promise<void> {
@@ -203,12 +233,6 @@ export class HabitComponent {
       };
 
     }
-  }
-
-  terminateSpinner(): void {
-    setTimeout(() => {
-      this.showSpinner = false;
-    }, 500)
   }
 
 }

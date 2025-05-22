@@ -4,6 +4,7 @@ import { HabitService } from '../../../../core/services/habit.service';
 import { HabitCompletionService } from '../../../../core/services/habit-completion.service';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from "../../spinner/spinner.component";
+import { DataSharingService } from '../../../services/data-sharing.service';
 
 declare var bootstrap: any;
 
@@ -26,9 +27,22 @@ export class NavbarComponent {
   private _bootstrapExportHabitModalInstance: any;
 
   constructor(private _habitService: HabitService,
-    private _habitalCompletionService: HabitCompletionService) { }
+    private _habitalCompletionService: HabitCompletionService,
+    private _dataSharing: DataSharingService) { }
 
   ngOnInit(): void {
+    this._loadingSpinnerInitialize();
+  }
+
+  _loadingSpinnerInitialize(): void {
+    this._dataSharing.showSpinnerSubject.subscribe((value: boolean) => {
+      if (!value) {
+        setTimeout(() => {
+          this.showSpinner = false;
+        }, 500)
+      }
+      this.showSpinner = true;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -40,7 +54,7 @@ export class NavbarComponent {
   // export code
 
   async exportHabitJson(): Promise<void> {
-  //  this.showSpinner = true;
+    this._dataSharing.showSpinnerSubject.next(true);
     let allHabitListForExportingFormat: any[] = await this._habitService.getAllHabitsForExportingJsonFileAsync();
 
     // each habitId will be having ascending wise habitId
@@ -67,7 +81,7 @@ export class NavbarComponent {
     });
 
     this._downloadJsonFile(exportJsonFileFormateOfHabitsStore);
-    this.terminateSpinner();
+    this._dataSharing.showSpinnerSubject.next(false);
     this.onCloseExportHabitModel();
 
   }
@@ -199,7 +213,7 @@ export class NavbarComponent {
   }
 
   async onImportHabitsConfirm(): Promise<void> {
-    this.showSpinner = true;
+    this._dataSharing.showSpinnerSubject.next(true);
     let resultFormated = this.importData;
     // remove data from tables
     await this._habitService.resetHabitAsync();
@@ -219,17 +233,11 @@ export class NavbarComponent {
       }
     }
     await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(resultFormated.habitCompletions);
-    this.terminateSpinner();
+    this._dataSharing.showSpinnerSubject.next(false);
     this.onCloseImportHabitModel();
+    this._dataSharing.refreshHabitsAfterImport.next(true);
   }
 
   // -----------------------------------------------------------------
-
-
-  terminateSpinner(): void {
-    setTimeout(() => {
-      this.showSpinner = false;
-    }, 500)
-  }
 
 }

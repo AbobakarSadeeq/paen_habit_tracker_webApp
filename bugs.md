@@ -1,7 +1,9 @@
 1. when habits is not found then return nothing or db is not found then dont do anything and it now giving me error.
 2. add detail note as well when open detail of single habit for explaination and how to do it and why.
 3. refactor the import and export functions.
-4. add to delete when single habit is deleted then delete its related all habits completions.
+4. make it responsiveness
+5. create view for habit detail
 
 done
 1. create models for import and exports.
+2. add to delete when single habit is deleted then delete its related all habits completions.
