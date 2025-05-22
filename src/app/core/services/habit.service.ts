@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HabitViewModel } from '../../presentation/view-models/habit.view-model';
 import { HabitMapper } from '../mapping/habit.mapper';
 import { HabitRepositoryService } from '../../data/habit-repository.service';

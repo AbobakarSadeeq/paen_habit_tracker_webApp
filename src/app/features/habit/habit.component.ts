@@ -40,14 +40,14 @@ export class HabitComponent {
   isColorSelectValidate: boolean = false;
   showSpinner = false;
 
-  constructor(private _habitalService: HabitService,
-    private _habitalCompletionService: HabitCompletionService) { }
+  constructor(private _habitService: HabitService,
+    private _habitalCompletionService: HabitCompletionService) {}
 
   async ngOnInit(): Promise<void> {
     this.showSpinner = true;
     this.selectedYearContributionGrid = new Date().getFullYear();
 
-    this.habitList = await this._habitalService.getAllHabitsAsync();
+    this.habitList = await this._habitService.getAllHabitsAsync();
 
     let startDate = `${this.selectedYearContributionGrid}-01-01`;
     let endDate = `${this.selectedYearContributionGrid}-12-31`;
@@ -82,7 +82,7 @@ export class HabitComponent {
       createdAt: new Date().toLocaleString(),
       isHabitDoneToday: false
     };
-    let addedHabitObj = await this._habitalService.storeHabitAsync(addHabitViewModel);
+    let addedHabitObj = await this._habitService.storeHabitAsync(addHabitViewModel);
     this.habitList.push(addedHabitObj);
 
     this.onCloseHabitModel();
@@ -127,7 +127,7 @@ export class HabitComponent {
     };
 
 
-    this._habitalService.updateHabitsAsync(updateHabitViewModel);
+    this._habitService.updateHabitsAsync(updateHabitViewModel);
 
     this.onCloseUpdateHabitModel();
   }
@@ -168,7 +168,7 @@ export class HabitComponent {
   async onDeleteHabitModel(): Promise<void> {
     const indexInMemoryHabitList = this.habitList.findIndex(singleHabit => singleHabit.Id == this.selectedHabitId);
     this.habitList.splice(indexInMemoryHabitList, 1);
-    this._habitalService.deleteHabitAsync(this.selectedHabitId);
+    this._habitService.deleteHabitAsync(this.selectedHabitId);
     this.onCloseDeleteHabitModel();
   }
 
@@ -204,116 +204,6 @@ export class HabitComponent {
 
     }
   }
-
-  // export and import
-
-  async exportHabitJson(): Promise<void> {
-    let allHabitListForExportingFormat: any[] = await this._habitalService.getAllHabitsForExportingJsonFileAsync();
-
-    // each habitId will be having ascending wise habitId
-    let assignNumberInOrderWiseToHabit: { [key: number]: number } = {};
-    let currentId = 1;
-    allHabitListForExportingFormat.forEach(singleHabit => {
-      if (assignNumberInOrderWiseToHabit[singleHabit.Id] == undefined) {
-        assignNumberInOrderWiseToHabit[singleHabit.Id] = currentId;
-        currentId++
-      }
-    });
-
-    let allHabitsCompletionListForExportingFormat = await this._habitalCompletionService.getAllHabitsCompleteionForExportingJsonFileAsync(assignNumberInOrderWiseToHabit);
-    let exportJsonFileFormateOfHabitsStore: any[] = [];
-    allHabitListForExportingFormat.forEach(singleHabit => {
-      exportJsonFileFormateOfHabitsStore.push(
-        {
-          'name': singleHabit.name,
-          'color': singleHabit.color,
-          'createdAt': singleHabit.createdAt,
-          'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id] ?? []
-        }
-      );
-    });
-
-    this._downloadJsonFile(exportJsonFileFormateOfHabitsStore);
-  }
-
-  _downloadJsonFile(data: any) {
-    const today = new Date();
-    const dateTime = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}_${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}`;
-    const convertToString = JSON.stringify(data);
-    const blob = new Blob([convertToString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${dateTime}_PaenHabit.json`; // fileName
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async onFileSelected(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files || input.files.length === 0) {
-      console.log('No file selected.');
-      return;
-    }
-
-    const file = input.files[0];
-    const reader = new FileReader();
-
-    reader.onload = async () => {
-      try {
-        const arrHabitsWithCompletions = JSON.parse(reader.result as string);
-        let resultFormated = this._formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions);
-
-        // remove data from tables
-        await this._habitalService.resetHabitAsync();
-        await this._habitalCompletionService.resetHabitCompletionAsync();
-
-        // stored data in bulk inside habit and return their primary keys where does it stored.
-        let primaryKeysStored = await this._habitalService.bulkSaveHabitsAsync(resultFormated.habits);
-
-        // first any value of primary key == 1, second any value of primary key == 2
-        let habitNumberCompletionWise = 1;
-        for (var singleHabitCompletion of resultFormated['habitCompletions']) {
-          if (singleHabitCompletion['habitId'] == habitNumberCompletionWise) {
-            singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]; // assign primary key value here of to that habit completion where it equals to habitId
-          } else {
-            habitNumberCompletionWise = singleHabitCompletion['habitId'];
-            singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]
-          }
-        }
-        await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(resultFormated.habitCompletions);
-      } catch (err) {
-        console.error('Error parsing JSON:', err);
-      }
-    };
-
-    reader.onerror = () => {
-      console.error('File reading error:', reader.error);
-    };
-
-    reader.readAsText(file);
-  }
-
-  _formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions: any[]): any {
-    let result: any = {
-      'habits': [],
-      'habitCompletions': []
-    }
-
-    arrHabitsWithCompletions.forEach(singleHabitWithItsCompletions => {
-      let singleHabit = {
-        'name': singleHabitWithItsCompletions['name'],
-        'color': singleHabitWithItsCompletions['color'],
-        'createdAt': singleHabitWithItsCompletions['createdAt'],
-      }
-      let habitCompletions = [...result['habitCompletions'], ...singleHabitWithItsCompletions['habitCompletions']];
-      result['habits'].push(singleHabit);
-      result['habitCompletions'] = habitCompletions;
-    });
-    return result;
-  }
-
 
   terminateSpinner(): void {
     setTimeout(() => {

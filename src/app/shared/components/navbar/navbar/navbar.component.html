@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-style-navbar">
-  <a class="navbar-brand" [routerLink]="['']">PaenHabit</a>
 
+  <strong><a class="navbar-brand" [routerLink]="['']">Paen<span
+        style="color: rgb(86, 211, 100);">Habit</span></a></strong>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -22,8 +23,85 @@
         <a class="nav-link" href="#">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Register</a>
+
+        <a class="nav-link" type="button" data-bs-toggle="dropdown">
+          <i class="bi bi-three-dots-vertical"></i>
+        </a>
+
+        <div class="dropdown">
+          <ul class="dropdown-menu">
+            <strong>
+              <li class="drop-down-element"><a class="dropdown-item" (click)="openExportHabitModel()">Export habits</a>
+              </li>
+            </strong>
+            <strong>
+              <li class="drop-down-element"><a class="dropdown-item" (click)="openImportHabitModel()">Import habits</a>
+              </li>
+            </strong>
+          </ul>
+        </div>
+
       </li>
+
+
     </ul>
   </div>
 </nav>
+
+
+<!-- Export modeling -->
+<div class="modal fade" #ExportHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content import-habit-model">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Export Habits <i class="bi bi-stars"></i></h1>
+      </div>
+      <div class="modal-body">
+        <p style="margin: 0;">Are you sure to export all habits in json format?</p>
+      </div>
+      <div class="modal-footer" style="border-top: none !important;">
+        <button type="button" class="btn btn-outline-secondary py-1 px-2"
+          (click)="onCloseExportHabitModel()">Close</button>
+        <button type="button" class="btn btn-primary py-1 px-2" (click)="exportHabitJson()">Export Habits</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Import modeling -->
+<div class="modal fade" #ImportHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content import-habit-model">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Import Habits <i class="bi bi-stars"></i></h1>
+      </div>
+      <div class="modal-body">
+        <!-- <p style="font-size: 12.5; margin:0em;"> Are you want to import and overwrite the habits</p> <br> -->
+
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".json"><br>
+        <span *ngIf="isItImportFileIsInvalid" style="color: red;">Your file format is incorrect!</span>
+        <br>
+
+        <div style="display: flex; align-items: center; gap: 8px;" *ngIf="showConfirmationToAddImportHabits">
+          <input class="form-check-input" type="checkbox" (change)="checkIsUserAgreeToImportHabits($event)"
+            aria-label="Checkbox for following text input">
+          <p style="margin: 0;">Are you sure to overwrite all habits?</p>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="border-top: none !important;">
+        <button type="button" class="btn btn-outline-secondary py-1 px-2"
+          (click)="onCloseImportHabitModel()">Close</button>
+        <button type="button" class="btn btn-danger py-1 px-2" (click)="onImportHabitsConfirm()"
+          [disabled]="disableImportBtn">Import Habits</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showSpinner" class="spinner-overlay">
+  <app-spinner></app-spinner>
+</div>
