@@ -5,13 +5,14 @@ import { HabitCompletionService } from '../../../../core/services/habit-completi
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from "../../spinner/spinner.component";
 import { DataSharingService } from '../../../services/data-sharing.service';
+import { ImportHabitsDoneMessageComponent } from "../../import-habits-done-message/import-habits-done-message.component";
 
 declare var bootstrap: any;
 
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterModule, CommonModule, SpinnerComponent],
+  imports: [RouterModule, CommonModule, SpinnerComponent, ImportHabitsDoneMessageComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
   standalone: true,
@@ -25,6 +26,8 @@ export class NavbarComponent {
 
   @ViewChild('ExportHabitModal') exportHabitModal!: ElementRef;
   private _bootstrapExportHabitModalInstance: any;
+  showImportDoneMessage: boolean = false;
+
 
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
@@ -236,6 +239,14 @@ export class NavbarComponent {
     this._dataSharing.showSpinnerSubject.next(false);
     this.onCloseImportHabitModel();
     this._dataSharing.refreshHabitsAfterImport.next(true);
+
+    setTimeout(() => {
+      this.showImportDoneMessage = true;
+    }, 1000)
+
+    setTimeout(() => {
+      this.showImportDoneMessage = false;
+    }, 4000)
   }
 
   // -----------------------------------------------------------------

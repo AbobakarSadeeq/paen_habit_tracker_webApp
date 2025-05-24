@@ -37,25 +37,23 @@
     <div class="habit-body">
 
 
-      <div *ngFor="let singleHabit of habitList" class="habit-list">
 
-        <div class="single-habit">
+      <button class="single-habit" *ngFor="let singleHabit of habitList"
+        (click)="toggleOfAddingAndDeletingHabitCompletion(singleHabit.Id!, singleHabit.isHabitDoneToday!)">
 
-          <div class="left-items">
-            <span>{{singleHabit.name}}</span>
-          </div>
-
-          <div class="right-items">
-            <a [routerLink]="['/habit', singleHabit.Id]">Detail</a> &nbsp;
-            <span (click)="openUpdateHabitModel(singleHabit)"
-              style="color: rgb(12, 109, 251);cursor: pointer;text-decoration: underline;">Edit</span> &nbsp;
-            <input type="checkbox" (change)="toggleOfAddingAndDeletingHabitCompletion($event)"
-              [checked]="singleHabit.isHabitDoneToday" [value]="singleHabit.Id" />
-          </div>
-
+        <div class="left-items">
+          <p style="text-align: initial; ">{{singleHabit.name}}</p>
         </div>
 
-      </div>
+        <div class="right-items">
+          <a [routerLink]="['/habit', singleHabit.Id]" (click)="$event.stopPropagation()">Detail</a> &nbsp;
+          <a [routerLink]="[]" (click)="openUpdateHabitModel(singleHabit); $event.stopPropagation()">Edit</a> &nbsp;
+          <input type="checkbox" [checked]="singleHabit.isHabitDoneToday" [value]="singleHabit.Id"
+            class="habit-check-box" />
+          <!-- (change)="toggleOfAddingAndDeletingHabitCompletion($event)" -->
+        </div>
+
+      </button>
 
     </div>
 
@@ -182,8 +180,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="showImportDoneMessage">
-  <app-import-habits-done-message></app-import-habits-done-message>
 </div>

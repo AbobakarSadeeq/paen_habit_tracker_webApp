@@ -15,7 +15,7 @@ declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule, ImportHabitsDoneMessageComponent],
+  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -205,33 +205,36 @@ export class HabitComponent {
   // add habit_completion
   async onAddHabitToHabitCompletion(habitFKeyId: number): Promise<void> {
     await this._habitalCompletionService.addHabitCompletionAsync(habitFKeyId);
+    let findIndex = this.habitList.findIndex(a => a.Id == habitFKeyId);
+    this.habitList[findIndex].isHabitDoneToday = true;
   }
 
   // delete habit_completion
 
   async onDeleteHabitToHabitCompletion(habitFKeyId: number): Promise<void> {
     await this._habitalCompletionService.deleteHabitCompletionOfTodayDayAsync(habitFKeyId);
+    let findIndex = this.habitList.findIndex(a => a.Id == habitFKeyId);
+    this.habitList[findIndex].isHabitDoneToday = false;
   }
 
-  async toggleOfAddingAndDeletingHabitCompletion(event: any): Promise<void> {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    const habitIdValue = event.target.value;
-    const parseToIntOfHabitId = parseInt(habitIdValue);
+  async toggleOfAddingAndDeletingHabitCompletion(selectedHabitId: number, isChecked: boolean): Promise<void> {
+    // means that habit area has been clicked so, if it is true then means it will become false else will be true
+    let checkState = isChecked == false ? true : false;
     const todayDate = DateTimePicker.getLocalTodayDateOnly();
-    if (isChecked) {
-      await this.onAddHabitToHabitCompletion(parseToIntOfHabitId);
+
+    if (checkState) {
+      await this.onAddHabitToHabitCompletion(selectedHabitId);
       this.allContributionCountsAndWithTheirDatesData = {
         ...this.allContributionCountsAndWithTheirDatesData,
         [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) + 1
       };
 
     } else {
-      await this.onDeleteHabitToHabitCompletion(parseToIntOfHabitId);
+      await this.onDeleteHabitToHabitCompletion(selectedHabitId);
       this.allContributionCountsAndWithTheirDatesData = {
         ...this.allContributionCountsAndWithTheirDatesData,
         [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) - 1
       };
-
     }
   }
 

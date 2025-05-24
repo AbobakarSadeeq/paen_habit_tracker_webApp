@@ -3,7 +3,10 @@
 3. refactor the import and export functions.
 4. make it responsiveness
 5. create view for habit detail
+6. give image to store too for each hacbit to define it.
+7. make deisgn to tell the user how much habits remain now to complete for today? bar or something that dont leave you from your sight when using the app.
 
 done
 1. create models for import and exports.
 2. add to delete when single habit is deleted then delete its related all habits completions.
+3. when habit text become large then on output it becomes flowing from its area.

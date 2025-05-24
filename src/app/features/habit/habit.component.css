@@ -18,14 +18,34 @@
 }
 
 .single-habit {
-  padding: 0.5em 0.5em;
-  min-width: 10em;
+  padding: 0.8em 1em 0.3em 1em;
+  min-width: 25em;
   max-width: 25em;
-  height: 3em;
-  border: 0.5px solid white;
+  border: 0.5px solid rgb(52, 64, 81);
   display: flex;
   justify-content: space-between;
   margin-bottom: 1em;
+  border-radius: 6px;
+  background-color: transparent;
+  height: auto;
+  overflow: auto;
+  word-wrap: break-word;
+  color: white;
+}
+
+.left-items {
+  max-width: 68%;
+}
+
+.habit-check-box[type="checkbox"] {
+  accent-color: #4caf50; /* ✅ Checked color */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.single-habit:hover {
+  background-color: #181717; /* semi-transparent white */
+  cursor: pointer;
 }
 
 .habit-header {
