@@ -6,7 +6,7 @@ import { HabitViewModel } from '../../presentation/view-models/habit.view-model'
 import { ColorPickerDirective } from 'ngx-color-picker';
 import { HabitCompletionService } from '../../core/services/habit-completion.service';
 import { DateTimePicker } from '../../shared/utils/dateTime-picker';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../core/services/habit.service';
 import { DataSharingService } from '../../shared/services/data-sharing.service';
 import { ImportHabitsDoneMessageComponent } from "../../shared/components/import-habits-done-message/import-habits-done-message.component";
@@ -41,9 +41,16 @@ export class HabitComponent {
   isColorSelectValidate: boolean = false;
   showImportDoneMessage: boolean = false;
 
+  totalHabits: number = 0;
+  habitsTodayDone: number = 0;
+  progressPercentage: number = 0;
+  isItActionBtnPressed = false;
+
+
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
-    private _dataSharing: DataSharingService) { }
+    private _dataSharing: DataSharingService,
+    public _router: Router) { }
 
   async ngOnInit(): Promise<void> {
 
@@ -73,6 +80,7 @@ export class HabitComponent {
     this.selectedYearContributionGrid = new Date().getFullYear();
 
     this.habitList = await this._habitService.getAllHabitsAsync();
+    this._calculateHabitsTodayDoneWithPercentage();
 
     let startDate = `${this.selectedYearContributionGrid}-01-01`;
     let endDate = `${this.selectedYearContributionGrid}-12-31`;
@@ -84,6 +92,12 @@ export class HabitComponent {
     this._bootstrapModalInstance = new bootstrap.Modal(this.habitModalRef.nativeElement);
     this._bootstrapUpdateHabitModalInstance = new bootstrap.Modal(this.updateHabitModalRef.nativeElement);
     this._bootstrapDeleteHabitModalInstance = new bootstrap.Modal(this.deleteHabitModalRef.nativeElement);
+  }
+
+  _calculateHabitsTodayDoneWithPercentage(): void {
+    this.totalHabits = this.habitList.length;
+    this.habitsTodayDone = this.habitList.filter(a => a.isHabitDoneToday == true).length;
+    this.progressPercentage = (this.habitsTodayDone / this.totalHabits) * 100;
   }
 
 
@@ -107,7 +121,7 @@ export class HabitComponent {
     };
     let addedHabitObj = await this._habitService.storeHabitAsync(addHabitViewModel);
     this.habitList.push(addedHabitObj);
-
+    this._calculateHabitsTodayDoneWithPercentage();
     this.onCloseHabitModel();
   }
 
@@ -156,6 +170,7 @@ export class HabitComponent {
   }
 
   openUpdateHabitModel(selectedHabit: HabitViewModel): void {
+    this.isItActionBtnPressed = true;
     this.selectedHabitId = selectedHabit.Id!;
     this.selectedColor = selectedHabit.color;
     this.newHabitValue = selectedHabit.name;
@@ -164,6 +179,7 @@ export class HabitComponent {
 
   onCloseUpdateHabitModel(): void {
     this._bootstrapUpdateHabitModalInstance.hide();
+    this.isItActionBtnPressed = false;
     this.isNewHabitInputValidate = false;
     this.isColorSelectValidate = false;
     this.newHabitValue = "";
@@ -185,6 +201,7 @@ export class HabitComponent {
     this.newHabitValue = "";
     this.selectedColor = "";
     this.selectedHabitId = -1;
+    this.isItActionBtnPressed = false;
   }
 
 
@@ -199,7 +216,8 @@ export class HabitComponent {
     this.allContributionCountsAndWithTheirDatesData = await this._habitalCompletionService.getDataForMainContributionGridAsync(startDate, endDate);
     this.onCloseDeleteHabitModel();
     this._dataSharing.showSpinnerSubject.next(false);
-
+    this._calculateHabitsTodayDoneWithPercentage();
+    this.isItActionBtnPressed = false;
   }
 
   // add habit_completion
@@ -207,6 +225,7 @@ export class HabitComponent {
     await this._habitalCompletionService.addHabitCompletionAsync(habitFKeyId);
     let findIndex = this.habitList.findIndex(a => a.Id == habitFKeyId);
     this.habitList[findIndex].isHabitDoneToday = true;
+    this._calculateHabitsTodayDoneWithPercentage();
   }
 
   // delete habit_completion
@@ -215,27 +234,38 @@ export class HabitComponent {
     await this._habitalCompletionService.deleteHabitCompletionOfTodayDayAsync(habitFKeyId);
     let findIndex = this.habitList.findIndex(a => a.Id == habitFKeyId);
     this.habitList[findIndex].isHabitDoneToday = false;
+    this._calculateHabitsTodayDoneWithPercentage();
   }
 
   async toggleOfAddingAndDeletingHabitCompletion(selectedHabitId: number, isChecked: boolean): Promise<void> {
-    // means that habit area has been clicked so, if it is true then means it will become false else will be true
-    let checkState = isChecked == false ? true : false;
-    const todayDate = DateTimePicker.getLocalTodayDateOnly();
 
-    if (checkState) {
-      await this.onAddHabitToHabitCompletion(selectedHabitId);
-      this.allContributionCountsAndWithTheirDatesData = {
-        ...this.allContributionCountsAndWithTheirDatesData,
-        [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) + 1
-      };
+    // isItActionBtnPressed => used for to prevent the parent button on html by default pressed when child button is press or button inside button so, prevent by press of first button.
+    if (this.isItActionBtnPressed == false) {
 
-    } else {
-      await this.onDeleteHabitToHabitCompletion(selectedHabitId);
-      this.allContributionCountsAndWithTheirDatesData = {
-        ...this.allContributionCountsAndWithTheirDatesData,
-        [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) - 1
-      };
+      // means that habit area has been clicked so, if it is true(habitDone) then means it will become false(undone habit) else will be true
+      let checkState = isChecked == false ? true : false;
+      const todayDate = DateTimePicker.getLocalTodayDateOnly();
+
+      if (checkState) {
+        await this.onAddHabitToHabitCompletion(selectedHabitId);
+        this.allContributionCountsAndWithTheirDatesData = {
+          ...this.allContributionCountsAndWithTheirDatesData,
+          [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) + 1
+        };
+
+      } else {
+        await this.onDeleteHabitToHabitCompletion(selectedHabitId);
+        this.allContributionCountsAndWithTheirDatesData = {
+          ...this.allContributionCountsAndWithTheirDatesData,
+          [todayDate]: (this.allContributionCountsAndWithTheirDatesData[todayDate] || 0) - 1
+        };
+      }
     }
+  }
+
+  navigateToHabitDetailPage(habitId: number): void {
+    this.isItActionBtnPressed = true;
+    this._router.navigate(['/habit', habitId]);
   }
 
 }
