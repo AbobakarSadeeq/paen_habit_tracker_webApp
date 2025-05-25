@@ -9,13 +9,13 @@ import { DateTimePicker } from '../../shared/utils/dateTime-picker';
 import { Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../core/services/habit.service';
 import { DataSharingService } from '../../shared/services/data-sharing.service';
-import { ImportHabitsDoneMessageComponent } from "../../shared/components/import-habits-done-message/import-habits-done-message.component";
+import { NgxEditorComponent, NgxEditorMenuComponent, Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit',
-  imports: [CommonModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule],
+  imports: [CommonModule, NgxEditorModule, ContributionCalendarComponent, FormsModule, ColorPickerDirective, RouterModule],
   templateUrl: './habit.component.html',
   styleUrl: './habit.component.css'
 })
@@ -34,17 +34,31 @@ export class HabitComponent {
 
   allContributionCountsAndWithTheirDatesData: { [key: string]: number } = {};
   selectedYearContributionGrid: number = 0;
+
   newHabitValue: string = "";
   isNewHabitInputValidate: boolean = false;
+
   habitList: HabitViewModel[] = [];
+
   selectedColor: string = "";
   isColorSelectValidate: boolean = false;
-  showImportDoneMessage: boolean = false;
 
   totalHabits: number = 0;
   habitsTodayDone: number = 0;
   progressPercentage: number = 0;
   isItActionBtnPressed = false;
+
+  html = '';
+  editor: Editor = new Editor();
+  toolbar: Toolbar = [
+    ['bullet_list'],
+    ['text_color', 'background_color'],
+    ['blockquote'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+  ];
+
+  imageUrl = '';
+
 
 
   constructor(private _habitService: HabitService,
@@ -53,18 +67,9 @@ export class HabitComponent {
     public _router: Router) { }
 
   async ngOnInit(): Promise<void> {
-
     this._dataSharing.refreshHabitsAfterImport.subscribe(async (value) => {
       if (value) {
         await this._initializeHabitsAsync();
-
-        setTimeout(() => {
-          this.showImportDoneMessage = true;
-        }, 1000)
-
-        setTimeout(() => {
-          this.showImportDoneMessage = false;
-        }, 4000)
 
         this._dataSharing.refreshHabitsAfterImport.next(false);
 
@@ -204,7 +209,6 @@ export class HabitComponent {
     this.isItActionBtnPressed = false;
   }
 
-
   async onDeleteHabitModel(): Promise<void> {
     this._dataSharing.showSpinnerSubject.next(true);
     const indexInMemoryHabitList = this.habitList.findIndex(singleHabit => singleHabit.Id == this.selectedHabitId);
@@ -266,6 +270,10 @@ export class HabitComponent {
   navigateToHabitDetailPage(habitId: number): void {
     this.isItActionBtnPressed = true;
     this._router.navigate(['/habit', habitId]);
+  }
+
+  ngOnDestroy(): void {
+    this.editor?.destroy();
   }
 
 }

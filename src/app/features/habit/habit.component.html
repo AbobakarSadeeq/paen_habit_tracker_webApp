@@ -102,18 +102,19 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">New Habit <i class="bi bi-stars"></i></h1>
         </div>
         <div class="modal-body">
-          <p style="font-size: 12.5; margin:0em;">Habit name</p>
-          <div class="habit-input-section">
-            <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
-            @if (isNewHabitInputValidate) {
-            <span style="color: red;">Please write the habit name.</span>
-            }
-          </div>
 
+          <div>
+            <p style="font-size: 12.5; margin:0em;">Habit name</p>
+            <div class="habit-input-section">
+              <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
+              @if (isNewHabitInputValidate) {
+              <span style="color: red;">Please write the habit name.</span>
+              }
+            </div>
+          </div>
 
           <div>
             <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
-
             <div class="color-picker-wrapper">
               <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
                 [cpOutputFormat]="'hex'" readonly required />
@@ -125,12 +126,22 @@
             }
           </div>
 
+          <div>
+            <p style="font-size: 12.5; margin:1em 0em;">Image Url</p>
+            <div class="habit-input-section">
+              <input type="url" placeholder="Url (optional)" [(ngModel)]="imageUrl" />
+            </div>
+          </div>
 
-
-
-
+          <div>
+            <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
+            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+            <ngx-editor [editor]="editor" [ngModel]="html" [disabled]="false"
+              [placeholder]="'Type here... (optional)'"></ngx-editor>
+          </div>
 
         </div>
+
         <div class="modal-footer" style="border-top: none !important;">
           <button type="button" class="btn btn-outline-secondary py-1 px-2" (click)="onCloseHabitModel()">Close</button>
           <button type="button" class="btn btn-success py-1 px-2" (click)="onAddHabit()">Save Habit</button>

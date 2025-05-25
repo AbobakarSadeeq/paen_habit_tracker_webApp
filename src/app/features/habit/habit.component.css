@@ -156,3 +156,29 @@
   transform: translate(calc((cos(45deg) - 1) * 100%), -100%) rotate(-45deg);
   transform-origin: 100% 100%;
 }
+
+:host ::ng-deep .NgxEditor__Content {
+  background-color: rgb(23, 19, 26);
+  border-color: rgb(56, 60, 66);
+  color: white;
+}
+
+:host ::ng-deep .NgxEditor__MenuBar {
+  background-color: rgb(23, 19, 26);
+  border: rgb(56, 60, 66) solid 1px;
+  color: white;
+}
+
+:host ::ng-deep .NgxEditor__MenuItem:hover {
+  color: rgb(86, 211, 100);
+}
+
+:host ::ng-deep .NgxEditor__Dropdown:hover {
+  color:  rgb(56, 60, 66);
+}
+
+
+:host ::ng-deep .NgxEditor {
+  border: solid rgb(56, 60, 66) 1px;
+
+}

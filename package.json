@@ -20,6 +20,7 @@
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
     "ngx-color-picker": "^19.0.0",
+    "ngx-editor": "^19.0.0-beta.1",
     "ngx-indexed-db": "^20.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
