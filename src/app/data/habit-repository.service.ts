@@ -14,12 +14,16 @@ export class HabitRepositoryService {
     const storeData: any = await firstValueFrom(this._dbContext.add('habits', {
       name: habitEntity.name,
       color: habitEntity.color,
+      description: habitEntity.description ?? '',
+      imageUrl: habitEntity.imageUrl ?? '',
       createdAt: habitEntity.createdAt
     }));
     let result: Habit = {
       Id: storeData.Id,
       name: storeData.name,
       color: storeData.color,
+      description: storeData.description,
+      imageUrl: storeData.imageUrl,
       createdAt: storeData.createdAt,
     }
     return result;

@@ -27,6 +27,8 @@ export class HabitDetailComponent {
     Id: 0,
     name: '',
     color: '',
+    description: '',
+    imageUrl: '',
     createdAt: '',
     isHabitDoneToday: false
   };

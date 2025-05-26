@@ -9,7 +9,7 @@ import { DateTimePicker } from '../../shared/utils/dateTime-picker';
 import { Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../core/services/habit.service';
 import { DataSharingService } from '../../shared/services/data-sharing.service';
-import { NgxEditorComponent, NgxEditorMenuComponent, Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 
 declare var bootstrap: any;
 
@@ -48,6 +48,7 @@ export class HabitComponent {
   progressPercentage: number = 0;
   isItActionBtnPressed = false;
 
+  descriptionHtml = '';
   html = '';
   editor: Editor = new Editor();
   toolbar: Toolbar = [
@@ -58,8 +59,6 @@ export class HabitComponent {
   ];
 
   imageUrl = '';
-
-
 
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
@@ -121,6 +120,8 @@ export class HabitComponent {
       Id: 0,
       name: this.newHabitValue,
       color: this.selectedColor,
+      description: this.descriptionHtml,
+      imageUrl: this.imageUrl,
       createdAt: new Date().toLocaleString(),
       isHabitDoneToday: false
     };
@@ -140,6 +141,8 @@ export class HabitComponent {
     this.isColorSelectValidate = false;
     this.newHabitValue = "";
     this.selectedColor = "";
+    this.imageUrl = "";
+    this.descriptionHtml = "";
   }
 
   // update habit model
@@ -164,6 +167,8 @@ export class HabitComponent {
       Id: this.selectedHabitId,
       name: this.newHabitValue,
       color: this.selectedColor,
+      description: this.descriptionHtml,
+      imageUrl: this.imageUrl,
       createdAt: this.habitList[indexInMemoryHabitList].createdAt,
       isHabitDoneToday: this.habitList[indexInMemoryHabitList].isHabitDoneToday
     };
@@ -179,6 +184,8 @@ export class HabitComponent {
     this.selectedHabitId = selectedHabit.Id!;
     this.selectedColor = selectedHabit.color;
     this.newHabitValue = selectedHabit.name;
+    this.descriptionHtml = selectedHabit.description;
+    this.imageUrl = selectedHabit.imageUrl;
     this._bootstrapUpdateHabitModalInstance.show();
   }
 
@@ -189,6 +196,8 @@ export class HabitComponent {
     this.isColorSelectValidate = false;
     this.newHabitValue = "";
     this.selectedColor = "";
+    this.descriptionHtml = "";
+    this.imageUrl = "";
     this.selectedHabitId = -1;
   }
 

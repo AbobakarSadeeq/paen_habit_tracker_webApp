@@ -15,6 +15,8 @@ export class AppDbContext {
       storeSchema: [
         { name: 'name', keypath: 'name', options: { unique: false } },
         { name: 'color', keypath: 'color', options: { unique: false } },
+        { name: 'description', keypath: 'description', options: { unique: false } },
+        { name: 'imageUrl', keypath: 'imageUrl', options: { unique: false } },
         { name: 'createdAt', keypath: 'createdAt', options: { unique: false } }
       ]
     }

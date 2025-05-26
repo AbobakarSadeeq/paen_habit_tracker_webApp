@@ -8,6 +8,8 @@ export abstract class HabitMapper {
       Id: viewModel.Id!,
       name: viewModel.name,
       color: viewModel.color,
+      description: viewModel.description,
+      imageUrl: viewModel.imageUrl,
       createdAt: viewModel.createdAt
     };
   }
@@ -17,6 +19,8 @@ export abstract class HabitMapper {
       Id: entity.Id,
       name: entity.name,
       color: entity.color,
+      description: entity.description,
+      imageUrl: entity.imageUrl,
       createdAt: entity.createdAt,
       isHabitDoneToday: isHabitDoneToday
     };
