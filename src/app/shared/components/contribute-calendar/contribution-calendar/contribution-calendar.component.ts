@@ -13,8 +13,8 @@ export class ContributionCalendarComponent {
   weeks: any[][] = [];
   monthLabels: { name: string; column: number }[] = [];
   @Input() contributionCountsWithItsDates: { [key: string]: number } = {};
-  @Input() selectedYear : number = 0;
-  @Input() contributeColors : string[] = [];
+  @Input() selectedYear: number = 0;
+  @Input() contributeColors: string[] = [];
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedYear'] || changes['contributionCountsWithItsDates']) {
@@ -22,7 +22,7 @@ export class ContributionCalendarComponent {
     }
   }
 
-  generateContributionGridForYear(year: number, contributionCountsWithItsDates: { [key: string]: number }) : void {
+  generateContributionGridForYear(year: number, contributionCountsWithItsDates: { [key: string]: number }): void {
     const startDate = new Date(`${year.toString()}-01-01`);
     const endDate = new Date(`${year.toString()}-12-31`);
     const days: any[] = [];

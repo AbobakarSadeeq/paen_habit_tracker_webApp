@@ -161,6 +161,7 @@
   background-color: rgb(23, 19, 26);
   border-color: rgb(56, 60, 66);
   color: white;
+  word-wrap: break-word;
 }
 
 :host ::ng-deep .NgxEditor__MenuBar {
@@ -174,11 +175,9 @@
 }
 
 :host ::ng-deep .NgxEditor__Dropdown:hover {
-  color:  rgb(56, 60, 66);
+  color: rgb(56, 60, 66);
 }
-
 
 :host ::ng-deep .NgxEditor {
   border: solid rgb(56, 60, 66) 1px;
-
 }

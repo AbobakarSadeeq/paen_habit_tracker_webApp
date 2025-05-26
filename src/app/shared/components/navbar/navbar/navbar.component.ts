@@ -77,6 +77,8 @@ export class NavbarComponent {
         {
           'name': singleHabit.name,
           'color': singleHabit.color,
+          'description': singleHabit.description,
+          'imageUrl': singleHabit.imageUrl,
           'createdAt': singleHabit.createdAt,
           'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id] ?? []
         }
@@ -174,6 +176,8 @@ export class NavbarComponent {
       let singleHabit = {
         'name': singleHabitWithItsCompletions['name'],
         'color': singleHabitWithItsCompletions['color'],
+        'description': singleHabitWithItsCompletions['description'],
+        'imageUrl': singleHabitWithItsCompletions['imageUrl'],
         'createdAt': singleHabitWithItsCompletions['createdAt'],
       }
 
@@ -189,6 +193,8 @@ export class NavbarComponent {
     return result;
   }
 
+  // on import model
+
   checkIsUserAgreeToImportHabits(event: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
 
@@ -199,8 +205,6 @@ export class NavbarComponent {
     }
 
   }
-
-  // on import model
 
   openImportHabitModel(): void {
     this._bootstrapImportHabitModalInstance.show();
