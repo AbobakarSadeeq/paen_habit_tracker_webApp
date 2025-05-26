@@ -89,11 +89,6 @@
 
   </div>
 
-
-
-  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
-  <ngx-editor [editor]="editor" [ngModel]="descriptionHtml" [placeholder]="'Type here... (optional)'"></ngx-editor>
-
   <!-- Add-Habit-Modal -->
 
   <div class="modal fade" #AddHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
@@ -136,11 +131,10 @@
 
           <div>
             <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
-            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
-            <ngx-editor [editor]="editor" [ngModel]="descriptionHtml" [disabled]="false"
+            <ngx-editor-menu [editor]="addEditor" [toolbar]="toolbar"></ngx-editor-menu>
+            <ngx-editor [editor]="addEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
               [placeholder]="'Type here... (optional)'"></ngx-editor>
           </div>
-
         </div>
 
         <div class="modal-footer" style="border-top: none !important;">
@@ -198,11 +192,10 @@
 
           <div>
             <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
-            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-            <ngx-editor [editor]="editor" [ngModel]="descriptionHtml" [disabled]="false"
+            <ngx-editor-menu [editor]="updateEditor" [toolbar]="toolbar"></ngx-editor-menu>
+            <ngx-editor [editor]="updateEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
               [placeholder]="'Type here... (optional)'"></ngx-editor>
           </div>
-
         </div>
 
         <div class="modal-footer d-flex justify-content-between" style="border-top: none !important;">

@@ -49,8 +49,8 @@ export class HabitComponent {
   isItActionBtnPressed = false;
 
   descriptionHtml = '';
-  html = '';
-  editor: Editor = new Editor();
+  addEditor: Editor = new Editor();
+  updateEditor: Editor = new Editor();
   toolbar: Toolbar = [
     ['bullet_list'],
     ['text_color', 'background_color'],
@@ -282,7 +282,8 @@ export class HabitComponent {
   }
 
   ngOnDestroy(): void {
-    this.editor?.destroy();
+    this.addEditor?.destroy();
+    this.updateEditor?.destroy();
   }
 
 }
