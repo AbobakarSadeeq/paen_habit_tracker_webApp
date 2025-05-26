@@ -161,6 +161,8 @@ export class HabitComponent {
     if (indexInMemoryHabitList != -1) {
       this.habitList[indexInMemoryHabitList].name = this.newHabitValue;
       this.habitList[indexInMemoryHabitList].color = this.selectedColor;
+      this.habitList[indexInMemoryHabitList].imageUrl = this.imageUrl;
+      this.habitList[indexInMemoryHabitList].description = this.descriptionHtml;
     }
 
     let updateHabitViewModel: HabitViewModel = {
