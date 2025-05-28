@@ -12,3 +12,6 @@
 9. calender of showing of single month about how many times does this month only and also visible those days.
 10. how many times in total all done.
 11. do it by **momentum-work** and u know that.
+
+from month only what it solved?
+6, 8, 9
