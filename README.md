@@ -1,6 +1,7 @@
 # paen_habit_tracker_webApp
 
-# functionality to add to habit detail page:
-4. completed on this current year how many times. (inside-box show it)
-5. longest streak  (inside-box show it)
-10. how many times in total all done.
+## I implemented on that mind that i lose the size and gain the performance of project here
+1. cursor filteration => lose performance but gain size
+2. js filteration => lose size but gain performance
+
+# functionality to add to habit detail page
