@@ -1,0 +1,18 @@
+<div class="calendar">
+  <div class="header">
+    <button class="change-month-btn" (click)="prevMonth()">&#x276E;</button>
+    <div>{{ monthNames[currentMonth] }} {{ currentYear }}</div>
+    <button class="change-month-btn" (click)="nextMonth()">&#x276F;</button>
+  </div>
+
+  <div class="weekdays">
+    <div *ngFor="let day of weekDays">{{ day }}</div>
+  </div>
+
+  <div class="days">
+    <div *ngFor="let singleDate of calendarDays" class="day-cell" [ngClass]="{ 'highlight': isSpecialDate(singleDate) }"
+      [style.backgroundColor]="isSpecialDate(singleDate) ? doneCompletionsColorOnDates : ''">
+      {{ singleDate?.day || '' }}
+    </div>
+  </div>
+</div>

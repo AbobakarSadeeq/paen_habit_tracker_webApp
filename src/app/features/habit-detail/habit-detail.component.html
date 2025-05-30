@@ -1,5 +1,5 @@
 <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
-  [selectedYear]="selectedYearContributionGrid" [contributeColors]="['#0d1117', this.habitDetailViewModel.color]">
+  [selectedYear]="selectedYear" [contributeColors]="['#0d1117', this.habitDetailViewModel.color]">
 
 </app-contribution-calendar>
 
@@ -8,5 +8,17 @@
 <div style="margin-left: 40%;">
   <h1>HabitId: {{selectedHabitStreak.habitId}}</h1>
   <h1>Streak: {{selectedHabitStreak.streak}}</h1>
+  <h1>current week done: {{completedSelectedHabitTimesThisWeek}}</h1>
+  <h1>average all weeks of this month: {{averageWeeklyCompletion}}</h1>
+  <h1>completed times count of single habit all completions: {{totalEntireHabitCompletionsDoneCountOfSelectedHabit}}
+  </h1>
+  <h1>selected year all habit completions count: {{selectedYearHabitCompletionsDoneCount}}</h1>
+  <h1>highest streak of this selected habit: {{longestStreakOfThisHabit}}</h1>
+
+  <h1>completed this month times: {{completedSelectedHabitTimesThisMonth}}</h1><br><br>
+  <h1>description: {{habitDetailViewModel.description}}</h1><br><br>
+  <h1>imageUrl: {{habitDetailViewModel.imageUrl}}</h1>
 </div>
 
+<app-habit-done-days-calender [doneCompletionsColorOnDates]="habitDetailViewModel.color"
+  [specialDates]="onlyDatesOfCompletionForCalender"></app-habit-done-days-calender>

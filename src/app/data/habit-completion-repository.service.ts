@@ -14,7 +14,6 @@ export class HabitCompletionRepositoryService {
   async addHabitCompletionOnDbAsync(habitId: number): Promise<void> {
     await firstValueFrom(this._dbContext.add('habit_completions', {
       doneDate: DateTimePicker.getLocalTodayDateOnly(),
-      // doneDate: '2025-05-16',
       habitId: habitId
     }));
   }
@@ -240,8 +239,6 @@ export class HabitCompletionRepositoryService {
 
   }
 
-
-
   _computingStreaks(reverseSingleHabitCompletionSingleRow: any, habitWithItsStreakResult: any, localVariablesObj: any): void {
     // let singleRow: any = cursor.value; // start from decsending order i mean from last row iteration
     let singleDayHabitCompletionRowFromDb: any = reverseSingleHabitCompletionSingleRow; // start from decsending order i mean from last row iteration
@@ -309,5 +306,21 @@ export class HabitCompletionRepositoryService {
     return diffInDays;
   }
 
+  async getSingleHabitCompletionsOfSelectedMonthFromDbAsync(startDate: string, endDate: string): Promise<HabitCompletion[]> {
+    let allCompletionsOfSelectedMonth: HabitCompletion[] = await firstValueFrom(this._dbContext.getAllByIndex(
+      'habit_completions',
+      'doneDate',
+      IDBKeyRange.bound(startDate, endDate),
+    ));
 
+    return allCompletionsOfSelectedMonth;
+  }
+
+  async getCountOfSingleHabitTotalAllHabitCompletionFromDbAsync(habitId: number): Promise<number> {
+    return await firstValueFrom(this._dbContext.countByIndex(
+      'habit_completions',
+      'habitId',
+      IDBKeyRange.only(habitId)
+    ));
+  }
 }

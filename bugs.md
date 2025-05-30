@@ -4,6 +4,8 @@
 4. make it responsiveness
 5. create view for habit detail
 6. give image to store too for each hacbit to define it add just image url there and create input only and by click on it then it will navigate to it and show the image. use the url input
+7. bug found in calender that old year 2024 not showing its data
+
 
 done
 1. create models for import and exports.
