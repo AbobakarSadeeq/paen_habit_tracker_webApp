@@ -19,27 +19,25 @@ export class HabitCompletionService {
     return grouped;
   }
 
+  private _groupBySameDateWithCountsOfHabitCompletion(habitCompletionList: HabitCompletion[]): { [key: string]: number } {
+    return habitCompletionList.reduce((acc: Record<string, number>, item: any) => {
+      acc[item.doneDate] = (acc[item.doneDate] || 0) + 1;
+      return acc;
+    }, {});
+  }
 
   async getDataForSingleHabitContributionGridByHabitIdAndSelectedYearAsync(habitId: number, yearSelected: string): Promise<{ [key: string]: number }> {
     const habitCompletionList = await this._habitCompletionRepository.getSelectedHabitContributionDataFromDbByHabitIdAndSelectedYearAsync(habitId, yearSelected);
     return habitCompletionList;
   }
 
-  async getAllHabitsCompleteionForExportingJsonFileAsync(assignPrimaryIdInOrderWiseToHabit:any): Promise<Record<string, any[]>> {
+  async getAllHabitsCompleteionForExportingJsonFileAsync(assignPrimaryIdInOrderWiseToHabit: any): Promise<Record<string, any[]>> {
     const habitCompletionList = await this._habitCompletionRepository.getAllHabitsCompleteionForExportingJsonFileFromDbAsync(assignPrimaryIdInOrderWiseToHabit);
     return habitCompletionList;
   }
 
-
   async bulkSaveHabitsCompletionAsync(bulkHabitsCompletion: any[]): Promise<void> {
     await this._habitCompletionRepository.bulkSaveHabitsCompletionsOnDbAsync(bulkHabitsCompletion);
-  }
-
-  private _groupBySameDateWithCountsOfHabitCompletion(habitCompletionList: HabitCompletion[]): { [key: string]: number } {
-    return habitCompletionList.reduce((acc: Record<string, number>, item: any) => {
-      acc[item.doneDate] = (acc[item.doneDate] || 0) + 1;
-      return acc;
-    }, {});
   }
 
   async addHabitCompletionAsync(habitFKeyId: number): Promise<void> {
@@ -93,7 +91,6 @@ export class HabitCompletionService {
   }
 
   // highest streak count algorithm below
-
   async longestStreakOfSelectedHabitAsync(habitId: number): Promise<number> {
     const allCompletionsOfSelectedHabit = await this._habitCompletionRepository.getHabitCompletionListByHabitFkIdFromDbAsync(habitId);
     let longestStreak = 0;
@@ -132,7 +129,7 @@ export class HabitCompletionService {
     return longestStreak;
   }
 
-  _isSameDate(doneDate: Date, startStreakDate: Date): boolean {
+  private _isSameDate(doneDate: Date, startStreakDate: Date): boolean {
     return (
       doneDate.getFullYear() === startStreakDate.getFullYear() &&
       doneDate.getMonth() === startStreakDate.getMonth() &&
@@ -140,7 +137,7 @@ export class HabitCompletionService {
     );
   }
 
-  _getDaysDifference(doneDate: Date, startStreakDate: Date): number {
+  private _getDaysDifference(doneDate: Date, startStreakDate: Date): number {
     const d1 = new Date(doneDate);
     const d2 = new Date(startStreakDate);
 

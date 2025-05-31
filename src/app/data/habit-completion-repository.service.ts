@@ -76,7 +76,6 @@ export class HabitCompletionRepositoryService {
     ));
   }
 
-
   async getAllHabitsCompleteionForExportingJsonFileFromDbAsync(assignPrimaryIdInOrderWiseToHabit: any): Promise<{ [key: string]: any[] }> {
     return await firstValueFrom(new Observable<{ [key: string]: any[] }>((subscriber) => {
       let selectedHabitWithTheirHabitsId: { [key: string]: any[] } = {};
@@ -169,13 +168,11 @@ export class HabitCompletionRepositoryService {
                 return;
               }
             }
-
           }
 
         },
         complete: () => {
           // Cursor iteration done
-          console.log('cursor completed of single habit contribution data');
           subscriber.next(selectedHabitWithTheirDatesContribution);
           subscriber.complete();
         },
@@ -189,8 +186,7 @@ export class HabitCompletionRepositoryService {
     await firstValueFrom(this._dbContext.clear('habit_completions'));
   }
 
-  // get the streak of the habit completion below methods.
-
+  // get the current streak of the habit completion below methods.
   async getSingleHabitStreakHabitCompletionFromDbAsync(habitId: number): Promise<object> {
     return await firstValueFrom(new Observable<Object>((subscriber) => {
       let habitWithItsStreakResult = {
@@ -239,7 +235,7 @@ export class HabitCompletionRepositoryService {
 
   }
 
-  _computingStreaks(reverseSingleHabitCompletionSingleRow: any, habitWithItsStreakResult: any, localVariablesObj: any): void {
+  private _computingStreaks(reverseSingleHabitCompletionSingleRow: any, habitWithItsStreakResult: any, localVariablesObj: any): void {
     // let singleRow: any = cursor.value; // start from decsending order i mean from last row iteration
     let singleDayHabitCompletionRowFromDb: any = reverseSingleHabitCompletionSingleRow; // start from decsending order i mean from last row iteration
     if (!localVariablesObj.isTodayHabitCompletionCheckedYet) {
@@ -293,7 +289,7 @@ export class HabitCompletionRepositoryService {
     }
   }
 
-  _getDaysDifference(date1: string, date2: string): number {
+  private _getDaysDifference(date1: string, date2: string): number {
     const d1 = new Date(date1);
     const d2 = new Date(date2);
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-habit-done-days-calender',
@@ -12,6 +12,7 @@ export class HabitDoneDaysCalenderComponent {
 
   @Input() doneCompletionsColorOnDates: string = '';
   @Input() specialDates: { day: number, month: number, year: number }[] = [];
+  @Output() triggerOfChangingMonthInHabitDetail = new EventEmitter<Date>();
 
   currentMonth = new Date().getMonth(); // 0-based
   currentYear = new Date().getFullYear();
@@ -61,6 +62,8 @@ export class HabitDoneDaysCalenderComponent {
       this.currentYear--;
     }
     this.generateCalendar();
+    const date = new Date(this.currentYear, this.currentMonth);
+    this.triggerOfChangingMonthInHabitDetail.emit(date);
   }
 
   nextMonth(): void {
@@ -70,5 +73,8 @@ export class HabitDoneDaysCalenderComponent {
       this.currentYear++;
     }
     this.generateCalendar();
+    const date = new Date(this.currentYear, this.currentMonth);
+    this.triggerOfChangingMonthInHabitDetail.emit(date);
+
   }
 }

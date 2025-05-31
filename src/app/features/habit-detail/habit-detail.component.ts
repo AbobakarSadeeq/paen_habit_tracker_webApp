@@ -19,9 +19,9 @@ export class HabitDetailComponent {
 
   selectedHabitId!: number;
 
-  // contribution grid properties
-  selectedHabitStreak: any = {}
   selectedYear: number = 0;
+
+  // contribution grid properties
   allContributionCountsAndWithTheirDatesData: { [key: string]: number } = {};
 
   showSpinner = false;
@@ -40,36 +40,33 @@ export class HabitDetailComponent {
     isHabitDoneToday: false
   };
 
-  completedSelectedHabitTimesThisWeek: number = 0;
-  averageWeeklyCompletion: number = 0; // assign month average this habit done and only 7 upto days only
-  completedSelectedHabitTimesThisMonth: number = 0;
-  completedSelectedHabitMonthlyConsistency: number = 0;
   onlyDatesOfCompletionForCalender: { day: number; month: number; year: number }[] = [];
 
-  // thisssssss below is not done yet
+  // below are statis holders
+  completedSelectedHabitTimesThisCurrentWeek: number = 0;
+  averageWeeklyCompletion: number = 0;
+  completedSelectedHabitTimesThisMonth: number = 0;
+  completedSelectedHabitMonthlyConsistency: number = 0;
   selectedYearHabitCompletionsDoneCount: number = 0;
   longestStreakOfThisHabit: number = 0;
+  selectedHabitStreak: any = {};
   totalEntireHabitCompletionsDoneCountOfSelectedHabit: number = 0;
 
-
-
-  constructor(private _habitCompletionService: HabitCompletionService,
-    private _habitService: HabitService,
-    @Inject(ActivatedRoute) private _routeActivate: ActivatedRoute,
-    private _dataSharing: DataSharingService) { }
+  constructor(private _habitCompletionService: HabitCompletionService, private _habitService: HabitService, @Inject(ActivatedRoute) private _routeActivate: ActivatedRoute, private _dataSharing: DataSharingService) { }
 
   async ngOnInit(): Promise<void> {
+    await this._initializeHabitsDetailCompletionsAsync();
+  }
 
-
-    this.assignDatesToStartAndEndDates();
-
+  async _initializeHabitsDetailCompletionsAsync(): Promise<void> {
     this._dataSharing.showSpinnerSubject.next(true);
+
+    this.assignDatesToStartAndEndDates(new Date());
 
     let habitId: number = parseInt(this._routeActivate.snapshot.params['Id']);
     this.selectedHabitId = habitId;
 
     this.habitDetailViewModel = await this._habitService.getHabitByIdAsync(habitId);
-    this.selectedHabitStreak = await this._habitCompletionService.getSelectedHabitStreak(habitId);
 
     this.selectedYear = new Date().getFullYear();
     this.allContributionCountsAndWithTheirDatesData = await this._habitCompletionService.getDataForSingleHabitContributionGridByHabitIdAndSelectedYearAsync(habitId, this.selectedYear.toString());
@@ -79,27 +76,30 @@ export class HabitDetailComponent {
     await this.getCountOfSelectedHabitCompletionsAsync();
     await this.getCountOfSelectedHabitAllCompletionOfSelectedYearAsync();
     await this.getHighestStreakCountOfSelectedHabitAsync();
+    await this.getCurrentStreakCountOfSelectedHabitAsync();
     this._dataSharing.showSpinnerSubject.next(false);
   }
 
-  assignDatesToStartAndEndDates(): void {
-    const date = new Date();
+  // assign dates to selected date from start variable and end variable
+
+  assignDatesToStartAndEndDates(date: Date): void {
     const startFromDate = new Date(date.getFullYear(), date.getMonth(), 1);
     const endFromDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     this.selectedStartDate = startFromDate.toLocaleDateString('sv-SE');
     this.selectedStartEnd = endFromDate.toLocaleDateString('sv-SE');
   }
 
+  // get the ui states that can get through or calculate single month statis like (times done on this month), (times done on this week) etc...
 
-
-  // get the ui states that can we get through single month like (times done on this month), (times done on this week) etc...
   async getAllThoseUiStatesThatCanAchieveThroughSingleMonth(): Promise<void> {
     const selectedMonthAndHabitAllCompletions = await this._getSelectedMonthAndHabitAllCompletionsAsync();
-    this.completedSelectedHabitTimesThisWeek = this._completedSelectedHabitTimesThisWeek(selectedMonthAndHabitAllCompletions);
+    this.completedSelectedHabitTimesThisCurrentWeek = this._completedSelectedHabitTimesThisCurrentWeek(selectedMonthAndHabitAllCompletions);
     this.averageWeeklyCompletion = this._averageWeeklyCompletion(selectedMonthAndHabitAllCompletions);
     this.completedSelectedHabitTimesThisMonth = this._monthlyCompletionTimes(selectedMonthAndHabitAllCompletions);
     this.onlyDatesOfCompletionForCalender = this._singleMonthAllCompletionDates(selectedMonthAndHabitAllCompletions);
   }
+
+  // get all completions of selected month
 
   async _getSelectedMonthAndHabitAllCompletionsAsync(): Promise<HabitCompletionViewModel[]> {
     const selectedMonthHabitsCompletionsList = await this._habitCompletionService
@@ -107,9 +107,9 @@ export class HabitDetailComponent {
     return selectedMonthHabitsCompletionsList;
   }
 
-  // completed Selected Habit Times This Week
+  // completed Selected Habit Times This current Week
 
-  _completedSelectedHabitTimesThisWeek(selectedMonthCompletions: HabitCompletionViewModel[]): number {
+  _completedSelectedHabitTimesThisCurrentWeek(selectedMonthCompletions: HabitCompletionViewModel[]): number {
     let selectedHabitDoneOnThisWeekTimes = 0;
     const date = new Date();
     const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday and week start from sunday
@@ -135,13 +135,27 @@ export class HabitDetailComponent {
     return selectedHabitDoneOnThisWeekTimes;
   }
 
-  // average Weekly Completion
+  // average Weekly Completion of entire month
 
   _averageWeeklyCompletion(selectedMonthCompletions: HabitCompletionViewModel[]): number {
-    return selectedMonthCompletions.length / 4;
+    if (!selectedMonthCompletions.length) return 0;
+
+    // Get the year and month from the first completion
+    const sampleDate = new Date(selectedMonthCompletions[0].doneDate);
+    const year = sampleDate.getFullYear();
+    const month = sampleDate.getMonth();
+
+    // Get total days in that month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Calculate number of weeks in the month (considering partial weeks)
+    const numberOfWeeks = Math.ceil(daysInMonth / 7);
+
+    // Average per week
+    return selectedMonthCompletions.length / numberOfWeeks;
   }
 
-  // entire monthly Completion
+  // entire monthly habit completion
 
   _monthlyCompletionTimes(selectedMonthCompletions: HabitCompletionViewModel[]): number {
     return selectedMonthCompletions.length;
@@ -168,13 +182,42 @@ export class HabitDetailComponent {
   }
 
   // get count of selected year all completions of selected habit
+
   async getCountOfSelectedHabitAllCompletionOfSelectedYearAsync(): Promise<void> {
     this.selectedYearHabitCompletionsDoneCount = await this._habitCompletionService.getAllCountOfSelectedHabitCompletionsOfSelectedYearOnlyAsync(this.selectedHabitId, this.selectedYear);
   }
 
   // get highest streak count of selected habit
+
   async getHighestStreakCountOfSelectedHabitAsync(): Promise<void> {
     this.longestStreakOfThisHabit = await this._habitCompletionService.longestStreakOfSelectedHabitAsync(this.selectedHabitId);
+  }
+
+  // get current streak count of selected habit
+
+  async getCurrentStreakCountOfSelectedHabitAsync(): Promise<void> {
+    this.selectedHabitStreak = await this._habitCompletionService.getSelectedHabitStreak(this.selectedHabitId);
+  }
+
+  // month changed in calender handler
+
+  async changeStatisByChangeInCalenderMonth(changeDate: Date): Promise<void> {
+    this.assignDatesToStartAndEndDates(changeDate);
+    await this.getAllThoseUiStatesThatCanAchieveThroughSingleMonth();
+
+    if (changeDate.getFullYear() != this.selectedYear) {
+      this.selectedYear = changeDate.getFullYear();
+      this.allContributionCountsAndWithTheirDatesData = await this._habitCompletionService.
+        getDataForSingleHabitContributionGridByHabitIdAndSelectedYearAsync(this.selectedHabitId, this.selectedYear.toString());
+
+      await this.getCountOfSelectedHabitAllCompletionOfSelectedYearAsync();
+    }
+  }
+
+  
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
   }
 
 }

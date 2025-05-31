@@ -1,5 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../../../core/services/habit.service';
 import { HabitCompletionService } from '../../../../core/services/habit-completion.service';
 import { CommonModule } from '@angular/common';
@@ -31,9 +31,11 @@ export class NavbarComponent {
 
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
-    private _dataSharing: DataSharingService) { }
+    private _dataSharing: DataSharingService,
+    private router: Router) { }
 
   ngOnInit(): void {
+
     this._loadingSpinnerInitialize();
   }
 
@@ -243,6 +245,9 @@ export class NavbarComponent {
     this._dataSharing.showSpinnerSubject.next(false);
     this.onCloseImportHabitModel();
     this._dataSharing.refreshHabitsAfterImport.next(true);
+
+    console.log(this.router.url);
+    // here when import is done then navigate to home page.
 
     setTimeout(() => {
       this.showImportDoneMessage = true;
