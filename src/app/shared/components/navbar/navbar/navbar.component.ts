@@ -1,11 +1,12 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HabitService } from '../../../../core/services/habit.service';
 import { HabitCompletionService } from '../../../../core/services/habit-completion.service';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from "../../spinner/spinner.component";
 import { DataSharingService } from '../../../services/data-sharing.service';
 import { ImportHabitsDoneMessageComponent } from "../../import-habits-done-message/import-habits-done-message.component";
+import { filter } from 'rxjs';
 
 declare var bootstrap: any;
 
@@ -21,6 +22,8 @@ declare var bootstrap: any;
 export class NavbarComponent {
   showSpinner = false;
 
+  currentUrl = '';
+
   @ViewChild('ImportHabitModal') importHabitModalRef!: ElementRef;
   private _bootstrapImportHabitModalInstance: any;
 
@@ -35,6 +38,14 @@ export class NavbarComponent {
     private router: Router) { }
 
   ngOnInit(): void {
+
+    // when navigation is end then assign the url to the currentUrl property on navbar and navbar view is static thats why adding everytime when navigation end.
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentUrl = event.url;
+        console.log(event.url);
+      });
 
     this._loadingSpinnerInitialize();
   }
@@ -246,8 +257,6 @@ export class NavbarComponent {
     this.onCloseImportHabitModel();
     this._dataSharing.refreshHabitsAfterImport.next(true);
 
-    console.log(this.router.url);
-    // here when import is done then navigate to home page.
 
     setTimeout(() => {
       this.showImportDoneMessage = true;
@@ -255,7 +264,17 @@ export class NavbarComponent {
 
     setTimeout(() => {
       this.showImportDoneMessage = false;
+      this._navigateOnImportToHome();
     }, 4000)
+
+  }
+
+  _navigateOnImportToHome(): void {
+    // here when import is done then navigate to home page for to prevent errors.
+    if (this.currentUrl.startsWith('/habit')) {
+      console.log('imported new data and navigated to home successful!');
+      this.router.navigate(['']);
+    }
   }
 
   // -----------------------------------------------------------------
