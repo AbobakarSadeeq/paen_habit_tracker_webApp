@@ -1,0 +1,118 @@
+.main-container {
+  max-width: 1000px;
+  margin: 2em auto;
+  width: 90%; /*   min and max both are same here   */
+}
+
+.contribution-grid-section {
+  margin: 0em 4.8em;
+  max-width: 100%;
+}
+
+.contribution-calender {
+  margin-top: 1em;
+  width: 14em; /*   min and max both are same here   */
+  /* background-color: green; */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  height: max-content;
+}
+
+.contribution-calender-with-habit-name {
+  background-color: none;
+  max-width: 15em;
+  min-width: 10em;
+  text-align: center;
+}
+
+.habit-name {
+  font-size: 2em;
+}
+
+/* parent of stats and contribution both */
+
+.parent-container-of-contribution-calender-and-stats-cards {
+  display: flex;
+}
+
+/* boxes for each stats */
+
+.card {
+  background-color: transparent;
+  border: solid rgb(133, 141, 153) 2px;
+  height: 8em;
+  display: flex;
+  color: rgb(133, 141, 153);
+  align-items: center; /* Vertically center */
+  justify-content: center; /* Horizontally center (optional) */
+  width: 10em; /*   min and max both are same here   */
+  border-radius: 20px;
+}
+
+.stats-parent {
+  margin: 0;
+}
+
+.header-name {
+  margin: 0;
+  font-size: 0.7em;
+}
+
+.stats-value {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.stats-value-name {
+  margin-left: 4px;
+  font-size: 0.7em;
+}
+
+.parent-container-of-stats-card {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin: 1.4em 2em;
+}
+
+/* here break down the calender and all statistics of habit */
+
+@media (max-width: 1472px) {
+  .contribution-calender {
+    /* background-color: blue; */
+    font-size: 18px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 724px) {
+  .parent-container-of-contribution-calender-and-stats-cards {
+    /* background-color: yellow; */
+    display: block;
+  }
+
+  .contribution-calender {
+    /* background-color: red; */
+    margin: 1em auto;
+  }
+
+  .parent-container-of-stats-card {
+    margin: 1em auto;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 360px) {
+  /* .parent-container-of-contribution-calender-and-stats-cards {
+    background-color: pink;
+  }
+
+  .contribution-calender {
+    background-color: paleturquoise;
+  } */
+
+  .parent-container-of-stats-card {
+    gap: 0.25rem;
+  }
+}

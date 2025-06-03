@@ -1,24 +1,91 @@
-<app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
-  [selectedYear]="selectedYear" [contributeColors]="['#0d1117', this.habitDetailViewModel.color]">
-</app-contribution-calendar>
+<div class="main-container">
+
+  <div class="contribution-grid-section">
+    <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
+      [selectedYear]="selectedYear" [contributeColors]="['#0d1117', this.habitDetailViewModel.color]">
+    </app-contribution-calendar>
+  </div>
+
+  <!-- main of calender contribution and stats container -->
+  <div class="parent-container-of-contribution-calender-and-stats-cards">
+
+    <!-- calender of stats -->
+    <div class="contribution-calender">
+
+      <div class="contribution-calender-with-habit-name">
+        <p class="habit-name">{{habitDetailViewModel.name}}</p>
+        <app-habit-done-days-calender [doneCompletionsColorOnDates]="habitDetailViewModel.color"
+          [specialDates]="onlyDatesOfCompletionForCalender"
+          (triggerOfChangingMonthInHabitDetail)="changeStatisByChangeInCalenderMonth($event)"></app-habit-done-days-calender>
+      </div>
+
+    </div>
+
+    <!-- cards of stats -->
+    <div class="parent-container-of-stats-card">
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{selectedHabitId}}</span>
+          <span class="stats-value-name">Id</span>
+        </p>
+        <p class="header-name">Current habit id</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{selectedHabitStreak.streak}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">Current steak</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{longestStreakOfThisHabit}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">Longest Streak Days</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{selectedYearHabitCompletionsDoneCount}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">Completed in this Year</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisCurrentWeek}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">Completed this week</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisMonth}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">In this Month</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{totalEntireHabitCompletionsDoneCountOfSelectedHabit}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">In Total of this habit</p>
+      </div>
+
+      <div class="card">
+        <p class="stats-parent"><span class="stats-value">{{averageWeeklyCompletion}}</span>
+          <span class="stats-value-name">Days</span>
+        </p>
+        <p class="header-name">Average weekly</p>
+      </div>
 
 
+    </div>
 
-<div style="margin-left: 40%;">
-  <h1>HabitId: {{selectedHabitId}}</h1>
-  <h1>habit current Streak: {{selectedHabitStreak.streak}}</h1>
-  <h1>current month selected week done: {{completedSelectedHabitTimesThisCurrentWeek}}</h1>
-  <h1>average all weeks of this month: {{averageWeeklyCompletion}}</h1>
-  <h1>completed times count of single habit all completions: {{totalEntireHabitCompletionsDoneCountOfSelectedHabit}}
-  </h1>
-  <h1>selected year all habit completions count: {{selectedYearHabitCompletionsDoneCount}}</h1>
-  <h1>highest streak of this selected habit: {{longestStreakOfThisHabit}}</h1>
+  </div>
 
-  <h1>completed this month times: {{completedSelectedHabitTimesThisMonth}}</h1><br><br>
-  <h1>description: {{habitDetailViewModel.description}}</h1><br><br>
-  <h1>imageUrl: {{habitDetailViewModel.imageUrl}}</h1>
+
 </div>
-
-<app-habit-done-days-calender [doneCompletionsColorOnDates]="habitDetailViewModel.color"
-  [specialDates]="onlyDatesOfCompletionForCalender"
-  (triggerOfChangingMonthInHabitDetail)="changeStatisByChangeInCalenderMonth($event)"></app-habit-done-days-calender>
+<!-- <h1>description: {{habitDetailViewModel.description}}</h1>
+    <h1>imageUrl: {{habitDetailViewModel.imageUrl}}</h1> -->

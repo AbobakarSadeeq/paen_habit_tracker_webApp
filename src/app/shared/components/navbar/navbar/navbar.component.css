@@ -3,7 +3,27 @@
 }
 
 .dropdown-menu {
-  background-color: rgb(13, 17, 23) !important;
+  background-color: #212529 !important;
+}
+
+.dropdown-item {
+  color: white;
+  cursor: pointer;
+}
+
+.custom-style-navbar {
+  position: relative;
+}
+
+.navbar-nav .dropdown-menu {
+  position: none;
+}
+
+.custom-right {
+  position: absolute;
+  right: 0;
+  left: -150px;
+  top: 38px;
 }
 
 /* Corrected CSS */
@@ -16,6 +36,7 @@
 
 .dropdown-menu a:hover {
   background-color: rgb(86, 211, 100) !important; /* Hover effect */
+  color: black;
 }
 
 .import-habit-model {
@@ -40,4 +61,17 @@
   justify-content: center;
   align-items: center;
   z-index: 9999; /* Ensure it's on top */
+}
+
+@media (min-width: 360px) and (max-width: 724px) {
+  .navbar {
+    padding: 0;
+    padding-right: 10%;
+    padding-left: 10%;
+  }
+
+  .navbar-nav {
+    margin: 0;
+    padding: 0;
+  }
 }

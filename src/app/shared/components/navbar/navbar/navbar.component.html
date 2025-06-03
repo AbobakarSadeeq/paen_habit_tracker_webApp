@@ -1,12 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-style-navbar">
+<nav class="navbar navbar-dark bg-dark custom-style-navbar ">
 
   <strong><a class="navbar-brand" [routerLink]="['']">Paen<span
         style="color: rgb(86, 211, 100);">Habit</span></a></strong>
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
-  <div class="collapse navbar-collapse" id="navbarNav">
+  <div class="" id="navbarNav">
     <!-- All nav links are horizontal by default inside navbar-nav -->
 
     <!-- Left-side links -->
@@ -19,31 +16,27 @@
 
     <!-- Right-side links (pushed right using ms-auto) -->
     <ul class="navbar-nav ms-auto">
-      <li class="nav-item mx-2 px-0">
-        <a class="nav-link" href="#">Login</a>
-      </li>
+
       <li class="nav-item">
 
-        <a class="nav-link" type="button" data-bs-toggle="dropdown">
+        <!-- <a class="nav-link" type="button" data-bs-toggle="dropdown">
           <i class="bi bi-three-dots-vertical"></i>
-        </a>
+        </a> -->
 
+
+        <!-- Dropdown -->
         <div class="dropdown">
-          <ul class="dropdown-menu">
-            <strong>
-              <li class="drop-down-element"><a class="dropdown-item" (click)="openExportHabitModel()">Export habits</a>
-              </li>
-            </strong>
-            <strong>
-              <li class="drop-down-element"><a class="dropdown-item" (click)="openImportHabitModel()">Import habits</a>
-              </li>
-            </strong>
+          <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots-vertical"></i>
+          </a>
+
+          <!-- Dropdown menu positioned outside -->
+          <ul class="dropdown-menu custom-right">
+            <li><a class="dropdown-item" (click)="openExportHabitModel()">Export habits</a></li>
+            <li><a class="dropdown-item" (click)="openImportHabitModel()">Import habits</a></li>
           </ul>
         </div>
-
       </li>
-
-
     </ul>
   </div>
 </nav>
