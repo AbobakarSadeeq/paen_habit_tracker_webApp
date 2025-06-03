@@ -78,6 +78,7 @@ export class HabitCompletionService {
 
   async getAllCountOfSelectedHabitCompletionsOfSelectedYearOnlyAsync(habitId: number, selectedYear: number): Promise<number> {
     // below variable is big data but scoped.
+
     let allCompletionsOfSelectedHabit = await this._habitCompletionRepository.getHabitCompletionListByHabitFkIdFromDbAsync(habitId);
     let count = 0;
     // apply business logic but here fast way too much
@@ -95,36 +96,40 @@ export class HabitCompletionService {
     const allCompletionsOfSelectedHabit = await this._habitCompletionRepository.getHabitCompletionListByHabitFkIdFromDbAsync(habitId);
     let longestStreak = 0;
     let streakStart = 0;
-    let startStreakDate = new Date(parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(0, 4)),
-      parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(5, 7)) - 1,
-      parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(8, 10)));
+    if (allCompletionsOfSelectedHabit.length) {
+      let startStreakDate = new Date(parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(0, 4)),
+        parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(5, 7)) - 1,
+        parseInt(allCompletionsOfSelectedHabit[0].doneDate.slice(8, 10)));
 
-    for (let singleHabitCompletion of allCompletionsOfSelectedHabit) {
-      const year = parseInt(singleHabitCompletion.doneDate.slice(0, 4));
-      const month = parseInt(singleHabitCompletion.doneDate.slice(5, 7)) - 1; // Month is 0-based
-      const day = parseInt(singleHabitCompletion.doneDate.slice(8, 10));
-      const doneDateHabit = new Date(year, month, day);
-      const isDateMatched = this._isSameDate(doneDateHabit, startStreakDate);
-      if (isDateMatched) {
-        streakStart++
-      } else {
-        if (longestStreak < streakStart) {
-          longestStreak = streakStart;
+      for (let singleHabitCompletion of allCompletionsOfSelectedHabit) {
+        const year = parseInt(singleHabitCompletion.doneDate.slice(0, 4));
+        const month = parseInt(singleHabitCompletion.doneDate.slice(5, 7)) - 1; // Month is 0-based
+        const day = parseInt(singleHabitCompletion.doneDate.slice(8, 10));
+        const doneDateHabit = new Date(year, month, day);
+        const isDateMatched = this._isSameDate(doneDateHabit, startStreakDate);
+        if (isDateMatched) {
+          streakStart++
+        } else {
+          if (longestStreak < streakStart) {
+            longestStreak = streakStart;
+          }
+          streakStart = 0;
         }
-        streakStart = 0;
+        const difference = this._getDaysDifference(doneDateHabit, startStreakDate);
+        if (difference > 0) {
+          startStreakDate.setDate(startStreakDate.getDate() + difference + 1); // add next day + the difference
+          streakStart++; // not matched then again start the counting of streak from start.
+          continue;
+        }
+        startStreakDate.setDate(startStreakDate.getDate() + 1); // add 1 day
       }
-      const difference = this._getDaysDifference(doneDateHabit, startStreakDate);
-      if (difference > 0) {
-        startStreakDate.setDate(startStreakDate.getDate() + difference + 1); // add next day + the difference
-        streakStart++; // not matched then again start the counting of streak from start.
-        continue;
-      }
-      startStreakDate.setDate(startStreakDate.getDate() + 1); // add 1 day
+
+      // if one element or not get a chance that else is not executed for to assign data to longest then assign streak.
+      if (streakStart > longestStreak && streakStart > 0)
+        longestStreak = streakStart;
+
     }
 
-    // if one element or not get a chance that else is not executed for to assign data to longest then assign streak.
-    if (streakStart > longestStreak && streakStart > 0)
-      longestStreak = streakStart;
 
     return longestStreak;
   }
