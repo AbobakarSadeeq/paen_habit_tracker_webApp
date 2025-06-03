@@ -1,11 +1,14 @@
 .main-container {
   max-width: 1000px;
+  width: 90%;
   margin: 3em auto;
 }
 
 .home-contribution-area {
+  width: 100%;
   max-width: 850px;
-  margin: auto;
+  min-width: 225px;
+  margin: 0 auto;
 }
 
 .home-grid-name {
@@ -18,8 +21,9 @@
 }
 
 .single-habit {
+  width: 100%;
   padding: 0.8em 1em 0.3em 1em;
-  min-width: 25em;
+  min-width: 18em;
   max-width: 25em;
   border: 0.5px solid rgb(52, 64, 81);
   display: flex;
@@ -181,3 +185,4 @@
 :host ::ng-deep .NgxEditor {
   border: solid rgb(56, 60, 66) 1px;
 }
+

@@ -1,14 +1,16 @@
 <div class="main-container">
 
   <div class="home-contribution-area">
-
     <h5 class="home-grid-name">Prograss Grid</h5>
 
-    <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
-      [selectedYear]="selectedYearContributionGrid"
-      [contributeColors]="['#0d1117', '#033a16', '#196c2e', '#2ea043', '#56d364']">
+    <div class="contribution-section">
 
-    </app-contribution-calendar>
+      <app-contribution-calendar [contributionCountsWithItsDates]="allContributionCountsAndWithTheirDatesData"
+        [selectedYear]="selectedYearContributionGrid"
+        [contributeColors]="['#0d1117', '#033a16', '#196c2e', '#2ea043', '#56d364']">
+
+      </app-contribution-calendar>
+    </div>
 
   </div>
 
@@ -89,147 +91,150 @@
 
   </div>
 
-  <!-- Add-Habit-Modal -->
+</div>
 
-  <div class="modal fade" #AddHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content add-habit-model-content">
-        <div class="modal-header" style="border-bottom: none !important;">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">New Habit <i class="bi bi-stars"></i></h1>
-        </div>
-        <div class="modal-body">
 
-          <div>
-            <p style="font-size: 12.5; margin:0em;">Habit name</p>
-            <div class="habit-input-section">
-              <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
-              @if (isNewHabitInputValidate) {
-              <span style="color: red;">Please write the habit name.</span>
-              }
-            </div>
-          </div>
+<!-- Add-Habit-Modal -->
 
-          <div>
-            <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
-            <div class="color-picker-wrapper">
-              <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
-                [cpOutputFormat]="'hex'" readonly required />
-              <i class="bi bi-palette-fill color-picker-icon"></i>
-            </div> <br>
+<div class="modal fade" #AddHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content add-habit-model-content">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">New Habit <i class="bi bi-stars"></i></h1>
+      </div>
+      <div class="modal-body">
 
-            @if (isColorSelectValidate) {
-            <span style="color: red;">Please select the color.</span>
+        <div>
+          <p style="font-size: 12.5; margin:0em;">Habit name</p>
+          <div class="habit-input-section">
+            <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
+            @if (isNewHabitInputValidate) {
+            <span style="color: red;">Please write the habit name.</span>
             }
           </div>
+        </div>
 
-          <div>
-            <p style="font-size: 12.5; margin:1em 0em;">Image Url</p>
-            <div class="habit-input-section">
-              <input type="url" placeholder="Url (optional)" [(ngModel)]="imageUrl" />
-            </div>
-          </div>
+        <div>
+          <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
+          <div class="color-picker-wrapper">
+            <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
+              [cpOutputFormat]="'hex'" readonly required />
+            <i class="bi bi-palette-fill color-picker-icon"></i>
+          </div> <br>
 
-          <div>
-            <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
-            <ngx-editor-menu [editor]="addEditor" [toolbar]="toolbar"></ngx-editor-menu>
-            <ngx-editor [editor]="addEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
-              [placeholder]="'Type here... (optional)'"></ngx-editor>
+          @if (isColorSelectValidate) {
+          <span style="color: red;">Please select the color.</span>
+          }
+        </div>
+
+        <div>
+          <p style="font-size: 12.5; margin:1em 0em;">Image Url</p>
+          <div class="habit-input-section">
+            <input type="url" placeholder="Url (optional)" [(ngModel)]="imageUrl" />
           </div>
         </div>
 
-        <div class="modal-footer" style="border-top: none !important;">
-          <button type="button" class="btn btn-outline-secondary py-1 px-2" (click)="onCloseHabitModel()">Close</button>
-          <button type="button" class="btn btn-success py-1 px-2" (click)="onAddHabit()">Save Habit</button>
+        <div>
+          <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
+          <ngx-editor-menu [editor]="addEditor" [toolbar]="toolbar"></ngx-editor-menu>
+          <ngx-editor [editor]="addEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
+            [placeholder]="'Type here... (optional)'"></ngx-editor>
         </div>
+      </div>
+
+      <div class="modal-footer" style="border-top: none !important;">
+        <button type="button" class="btn btn-outline-secondary py-1 px-2" (click)="onCloseHabitModel()">Close</button>
+        <button type="button" class="btn btn-success py-1 px-2" (click)="onAddHabit()">Save Habit</button>
       </div>
     </div>
   </div>
+</div>
 
 
-  <!-- Update-habit-model -->
+<!-- Update-habit-model -->
 
 
-  <div class="modal fade" #UpdateHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content add-habit-model-content">
-        <div class="modal-header" style="border-bottom: none !important;">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Update Selected Habit <i class="bi bi-stars"></i></h1>
-        </div>
+<div class="modal fade" #UpdateHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content add-habit-model-content">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Update Selected Habit <i class="bi bi-stars"></i></h1>
+      </div>
 
-        <div class="modal-body">
+      <div class="modal-body">
 
-          <div>
-            <p style="font-size: 12.5; margin:0em;">Habit name</p>
-            <div class="habit-input-section">
-              <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
-              @if (isNewHabitInputValidate) {
-              <span style="color: red;">Please write the habit name.</span>
-              }
-            </div>
-          </div>
-
-
-          <div>
-            <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
-
-            <div class="color-picker-wrapper">
-              <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
-                [cpOutputFormat]="'hex'" readonly required />
-              <i class="bi bi-palette-fill color-picker-icon"></i>
-            </div> <br>
-
-            @if (isColorSelectValidate) {
-            <span style="color: red;">Please select the color.</span>
+        <div>
+          <p style="font-size: 12.5; margin:0em;">Habit name</p>
+          <div class="habit-input-section">
+            <input type="text" placeholder="Write your new habit" [(ngModel)]="newHabitValue" required />
+            @if (isNewHabitInputValidate) {
+            <span style="color: red;">Please write the habit name.</span>
             }
           </div>
+        </div>
 
-          <div>
-            <p style="font-size: 12.5; margin:1em 0em;">Image Url</p>
-            <div class="habit-input-section">
-              <input type="url" placeholder="Url (optional)" [(ngModel)]="imageUrl" />
-            </div>
-          </div>
 
-          <div>
-            <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
-            <ngx-editor-menu [editor]="updateEditor" [toolbar]="toolbar"></ngx-editor-menu>
-            <ngx-editor [editor]="updateEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
-              [placeholder]="'Type here... (optional)'"></ngx-editor>
+        <div>
+          <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
+
+          <div class="color-picker-wrapper">
+            <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
+              [cpOutputFormat]="'hex'" readonly required />
+            <i class="bi bi-palette-fill color-picker-icon"></i>
+          </div> <br>
+
+          @if (isColorSelectValidate) {
+          <span style="color: red;">Please select the color.</span>
+          }
+        </div>
+
+        <div>
+          <p style="font-size: 12.5; margin:1em 0em;">Image Url</p>
+          <div class="habit-input-section">
+            <input type="url" placeholder="Url (optional)" [(ngModel)]="imageUrl" />
           </div>
         </div>
 
-        <div class="modal-footer d-flex justify-content-between" style="border-top: none !important;">
-          <button type="button" class="btn btn-danger py-1 px-2" (click)="openDeleteHabitModel()">Delete Habit</button>
+        <div>
+          <p style="font-size: 12.5; margin: 1em 0em;">Description</p>
+          <ngx-editor-menu [editor]="updateEditor" [toolbar]="toolbar"></ngx-editor-menu>
+          <ngx-editor [editor]="updateEditor" [(ngModel)]="descriptionHtml" [disabled]="false"
+            [placeholder]="'Type here... (optional)'"></ngx-editor>
+        </div>
+      </div>
 
-          <div>
-            <button type="button" class="btn btn-outline-secondary py-1 px-2 mx-2"
-              (click)="onCloseUpdateHabitModel()">Close</button>
-            <button type="button" class="btn btn-success py-1 px-2" (click)="onUpdateHabitModel()">Update Habit</button>
-          </div>
+      <div class="modal-footer d-flex justify-content-between" style="border-top: none !important;">
+        <button type="button" class="btn btn-danger py-1 px-2" (click)="openDeleteHabitModel()">Delete Habit</button>
+
+        <div>
+          <button type="button" class="btn btn-outline-secondary py-1 px-2 mx-2"
+            (click)="onCloseUpdateHabitModel()">Close</button>
+          <button type="button" class="btn btn-success py-1 px-2" (click)="onUpdateHabitModel()">Update Habit</button>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 
-  <!-- Delete-habit-model -->
+<!-- Delete-habit-model -->
 
 
-  <div class="modal fade" #DeleteHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content add-habit-model-content">
-        <div class="modal-header" style="border-bottom: none !important;">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Selected Habit <i class="bi bi-stars"></i></h1>
-        </div>
-        <div class="modal-body">
-          <p style="font-size: 12.5; margin:0em;"> Are you want to delete this <b>{{newHabitValue}}</b> habit</p>
+<div class="modal fade" #DeleteHabitModal data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content add-habit-model-content">
+      <div class="modal-header" style="border-bottom: none !important;">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Selected Habit <i class="bi bi-stars"></i></h1>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 12.5; margin:0em;"> Are you want to delete this <b>{{newHabitValue}}</b> habit</p>
 
-        </div>
-        <div class="modal-footer" style="border-top: none !important;">
-          <button type="button" class="btn btn-outline-secondary py-1 px-2"
-            (click)="onCloseDeleteHabitModel()">Close</button>
-          <button type="button" class="btn btn-danger py-1 px-2" (click)="onDeleteHabitModel()">Delete Habit</button>
-        </div>
+      </div>
+      <div class="modal-footer" style="border-top: none !important;">
+        <button type="button" class="btn btn-outline-secondary py-1 px-2"
+          (click)="onCloseDeleteHabitModel()">Close</button>
+        <button type="button" class="btn btn-danger py-1 px-2" (click)="onDeleteHabitModel()">Delete Habit</button>
       </div>
     </div>
   </div>
+</div>
