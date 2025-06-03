@@ -103,7 +103,7 @@
   }
 }
 
-@media (min-width: 360px) {
+@media (min-width: 350px) {
   /* .parent-container-of-contribution-calender-and-stats-cards {
     background-color: pink;
   }
@@ -113,6 +113,6 @@
   } */
 
   .parent-container-of-stats-card {
-    gap: 0.25rem;
+    gap: 0.13rem;
   }
 }
