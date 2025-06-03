@@ -186,3 +186,17 @@
   border: solid rgb(56, 60, 66) 1px;
 }
 
+.cp-ok-button-class {
+  background-color: #1f6feb;
+  color: white;
+  border: none;
+  padding: 0.6em .2em;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cp-ok-button-class:hover {
+  background-color: #1158c7;
+}

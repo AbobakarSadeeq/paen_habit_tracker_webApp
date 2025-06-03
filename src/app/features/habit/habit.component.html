@@ -1,7 +1,7 @@
 <div class="main-container">
 
   <div class="home-contribution-area">
-    <h5 class="home-grid-name">Prograss Grid</h5>
+    <h5 class="home-grid-name">Habits Progress Grid</h5>
 
     <div class="contribution-section">
 
@@ -118,7 +118,8 @@
           <p style="font-size: 12.5; margin: 0.4em 0em;">Pick a color</p>
           <div class="color-picker-wrapper">
             <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
-              [cpOutputFormat]="'hex'" readonly required />
+              [cpOutputFormat]="'hex'" [cpOKButton]="true" [cpOKButtonText]="'Save'" [cpOKButtonClass]="''" readonly
+              required />
             <i class="bi bi-palette-fill color-picker-icon"></i>
           </div> <br>
 
