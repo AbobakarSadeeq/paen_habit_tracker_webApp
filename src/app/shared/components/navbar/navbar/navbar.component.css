@@ -1,5 +1,5 @@
 .custom-style-navbar {
-  padding: 0px 10em;
+  padding: 0px 4.9%;
 }
 
 .dropdown-menu {
@@ -64,7 +64,7 @@
 }
 
 @media (min-width: 350px) and (max-width: 724px) {
-  .navbar {
+  /* .navbar {
     padding: 0;
     padding-right: 10%;
     padding-left: 10%;
@@ -73,5 +73,5 @@
   .navbar-nav {
     margin: 0;
     padding: 0;
-  }
+  } */
 }

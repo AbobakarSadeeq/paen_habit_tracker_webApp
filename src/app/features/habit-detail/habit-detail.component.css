@@ -5,8 +5,14 @@
 }
 
 .contribution-grid-section {
-  margin: 0em 4.8em;
-  max-width: 100%;
+  width: 100%;
+  max-width: 850px;
+  min-width: 225px;
+  margin: 0 auto;
+}
+
+.home-grid-name {
+  font-weight: 800;
 }
 
 .contribution-calender {
@@ -72,6 +78,7 @@
 .parent-container-of-stats-card {
   display: flex;
   gap: 1em;
+
   flex-wrap: wrap;
   margin: 1.4em 2em;
 }
@@ -104,7 +111,7 @@
 }
 
 @media (min-width: 350px) and (max-width: 400px) {
-   /* .parent-container-of-contribution-calender-and-stats-cards {
+  /* .parent-container-of-contribution-calender-and-stats-cards {
     background-color: pink;
   }
 
@@ -112,12 +119,9 @@
     background-color: paleturquoise;
   } */
 
-  .parent-container-of-stats-card {
-    gap: 0.13rem;
-  }
 
   .card {
-    height: 7em;
-    width: 9em;
+    height: 7.4em;
+    width: 9.4em;
   }
 }
