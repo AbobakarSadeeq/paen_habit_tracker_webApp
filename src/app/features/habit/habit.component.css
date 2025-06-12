@@ -166,6 +166,8 @@
   border-color: rgb(56, 60, 66);
   color: white;
   word-wrap: break-word;
+  max-height: 10em;
+  overflow: auto;
 }
 
 :host ::ng-deep .NgxEditor__MenuBar {
@@ -190,7 +192,7 @@
   background-color: #1f6feb;
   color: white;
   border: none;
-  padding: 0.6em .2em;
+  padding: 0.6em 0.2em;
   font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;
@@ -199,4 +201,9 @@
 
 .cp-ok-button-class:hover {
   background-color: #1158c7;
+}
+
+.modal-body {
+  height: 90%;
+  max-height: 600px;
 }

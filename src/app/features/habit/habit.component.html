@@ -180,7 +180,8 @@
 
           <div class="color-picker-wrapper">
             <input [(colorPicker)]="selectedColor" [style.background]="selectedColor" [cpWidth]="'250px'"
-              [cpOutputFormat]="'hex'" readonly required />
+              [cpOutputFormat]="'hex'" [cpOKButton]="true" [cpOKButtonText]="'Save'" [cpOKButtonClass]="''" readonly
+              required />
             <i class="bi bi-palette-fill color-picker-icon"></i>
           </div> <br>
 
