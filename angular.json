@@ -22,7 +22,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/favicon.png"
             ],
             "styles": [
               "src/styles.css",
@@ -81,7 +82,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/favicon.png"
             ],
             "styles": ["src/styles.css"],
             "scripts": []
