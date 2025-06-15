@@ -279,4 +279,9 @@ export class NavbarComponent {
 
   // -----------------------------------------------------------------
 
+  // refresh habits on click
+
+  refreshHabitsOnClick(): void {
+    this._dataSharing.refreshHabitsOnRefreshBtn.next(true);
+  }
 }

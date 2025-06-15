@@ -11,5 +11,6 @@ export class DataSharingService {
 
   showSpinnerSubject = new BehaviorSubject<boolean>(false);
   refreshHabitsAfterImport = new BehaviorSubject<boolean>(false);
+  refreshHabitsOnRefreshBtn = new BehaviorSubject<boolean>(false);
 
 }

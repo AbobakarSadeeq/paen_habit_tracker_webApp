@@ -2,6 +2,12 @@
   padding: 0px 4.9%;
 }
 
+:host ::ng-deep .navbar-nav.ms-auto {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1em !important;
+}
+
 .dropdown-menu {
   background-color: #212529 !important;
 }

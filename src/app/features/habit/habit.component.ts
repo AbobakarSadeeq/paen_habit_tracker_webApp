@@ -75,6 +75,14 @@ export class HabitComponent {
       }
     });
 
+    this._dataSharing.refreshHabitsOnRefreshBtn.subscribe(async (value) => {
+      if (value) {
+        await this._initializeHabitsAsync();
+
+        this._dataSharing.refreshHabitsOnRefreshBtn.next(false);
+      }
+    });
+
     await this._initializeHabitsAsync();
 
   }
