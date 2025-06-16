@@ -6,6 +6,7 @@
 7. on habit detail page when import file then it give error so , fix it and navigate it to home when import is done.
 8. give password lock functionality.
 9. use the aiven and mysql with .net and render for hosting backend. or use just firebase to store the data and no backend or all things required.  i think i will go for firebase which is easy and not alot of work required to do.
+10. create a google id and then add it there and connect the app with it.
 
 # done
 
