@@ -4,7 +4,8 @@
 5. create view for habit detail
 6. give image to store too for each habit to define it add just image url there and create input only and by click on it then it will navigate to it and show the image. use the url input
 7. on habit detail page when import file then it give error so , fix it and navigate it to home when import is done.
-8. give password lock functionality
+8. give password lock functionality.
+9. use the aiven and mysql with .net and render for hosting backend. or use just firebase to store the data and no backend or all things required.  i think i will go for firebase which is easy and not alot of work required to do.
 
 # done
 
