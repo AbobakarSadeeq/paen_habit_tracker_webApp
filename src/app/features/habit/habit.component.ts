@@ -80,6 +80,7 @@ export class HabitComponent {
         await this._initializeHabitsAsync();
 
         this._dataSharing.refreshHabitsOnRefreshBtn.next(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
 

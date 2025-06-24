@@ -1,5 +1,9 @@
 .custom-style-navbar {
   padding: 0px 4.9%;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 :host ::ng-deep .navbar-nav.ms-auto {
@@ -15,10 +19,6 @@
 .dropdown-item {
   color: white;
   cursor: pointer;
-}
-
-.custom-style-navbar {
-  position: relative;
 }
 
 .navbar-nav .dropdown-menu {
