@@ -5,8 +5,7 @@
 6. give image to store too for each habit to define it add just image url there and create input only and by click on it then it will navigate to it and show the image. use the url input
 7. on habit detail page when import file then it give error so , fix it and navigate it to home when import is done.
 8. give password lock functionality.
-9. use the aiven and mysql with .net and render for hosting backend. or use just firebase to store the data and no backend or all things required.  i think i will go for firebase which is easy and not alot of work required to do.
-10. create a google id and then add it there and connect the app with it.
+9. dont just add rls to tables and use the supabase and create auth with it only and then use it for yourself and create it.
 
 # done
 
@@ -18,3 +17,4 @@
 6. bug found in calender that old year 2024 not showing its data.
 7. add detail note as well when open detail of single habit for explaination and how to do it and why and use the ngx-editor.
 8. when habits is not found then return nothing or db is not found then dont do anything and it now giving me error.
+9. create a google id and then add it there and connect the app with it.
