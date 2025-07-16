@@ -87,16 +87,12 @@ export class HabitCompletionRepositoryService {
           if (!cursor) return;
           let value = cursor.value;
           if (selectedHabitWithTheirHabitsId[value.habitId]) {
-            let arr = selectedHabitWithTheirHabitsId[value.habitId];
-            let mapping = {
-              'doneDate': cursor.value.doneDate,
-              'habitId': assignPrimaryIdInOrderWiseToHabit[value.habitId]
-            }
-            arr.push(mapping);
+            let arr: any = selectedHabitWithTheirHabitsId[value.habitId];
+            arr[0]['doneDate'].push(cursor.value.doneDate);
           } else {
             let mapping = {
-              'doneDate': cursor.value.doneDate,
-              'habitId': assignPrimaryIdInOrderWiseToHabit[value.habitId]
+              'habitId': assignPrimaryIdInOrderWiseToHabit[value.habitId],
+              'doneDate': [cursor.value.doneDate],
             }
             selectedHabitWithTheirHabitsId[value.habitId] = [mapping];
 

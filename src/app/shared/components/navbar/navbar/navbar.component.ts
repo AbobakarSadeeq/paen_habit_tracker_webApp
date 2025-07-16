@@ -71,8 +71,8 @@ export class NavbarComponent {
 
   async exportHabitJson(): Promise<void> {
     this._dataSharing.showSpinnerSubject.next(true);
+    // get only habits
     let allHabitListForExportingFormat: any[] = await this._habitService.getAllHabitsForExportingJsonFileAsync();
-
     // each habitId will be having ascending wise habitId
     let assignNumberInOrderWiseToHabit: { [key: number]: number } = {};
     let currentId = 1;
@@ -88,12 +88,13 @@ export class NavbarComponent {
     allHabitListForExportingFormat.forEach(singleHabit => {
       exportJsonFileFormateOfHabitsStore.push(
         {
+          'habitId': allHabitsCompletionListForExportingFormat?.[singleHabit.Id][0]['habitId'],
           'name': singleHabit.name,
           'color': singleHabit.color,
           'description': singleHabit.description,
           'imageUrl': singleHabit.imageUrl,
           'createdAt': singleHabit.createdAt,
-          'habitCompletions': allHabitsCompletionListForExportingFormat[singleHabit.Id] ?? []
+          'habitCompletions': allHabitsCompletionListForExportingFormat?.[singleHabit.Id][0]['doneDate'] ?? []
         }
       );
     });
@@ -198,7 +199,12 @@ export class NavbarComponent {
         return result;
       }
 
-      let habitCompletions = [...result['habitCompletions'], ...singleHabitWithItsCompletions['habitCompletions']];
+      let mappedForToStoreInDbFormat: any[] = singleHabitWithItsCompletions['habitCompletions'].map((date: string) => ({
+        doneDate: date,
+        habitId: singleHabitWithItsCompletions['habitId'],
+      }));
+
+      let habitCompletions = [...result['habitCompletions'], ...mappedForToStoreInDbFormat];
       result['habits'].push(singleHabit);
       result['habitCompletions'] = habitCompletions;
     }
