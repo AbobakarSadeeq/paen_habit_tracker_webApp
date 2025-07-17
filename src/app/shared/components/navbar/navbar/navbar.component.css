@@ -3,6 +3,7 @@
   position: fixed;
   top: 0;
   width: 100%;
+  height: 40px;
   z-index: 1000;
 }
 
@@ -67,6 +68,49 @@
   justify-content: center;
   align-items: center;
   z-index: 9999; /* Ensure it's on top */
+}
+
+/* paen habit backup content moving */
+
+/* .bar {
+  background-color: red;
+  color: white;
+
+  display: inline-block;
+  animation: scroll-right 15s linear infinite;
+} */
+
+.bar {
+  background-color: rgb(86, 211, 100);
+  color: rgba(0, 0, 0, 0.733);
+  font-family: Gelasio, sans-serif;
+  font-size: 12px;
+  width: 100%;
+  position: fixed;
+  top: 40px;
+  z-index: 999;
+}
+
+.bar_wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar_content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: move 30s linear infinite;
+}
+
+@keyframes move {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 @media (min-width: 350px) and (max-width: 724px) {
