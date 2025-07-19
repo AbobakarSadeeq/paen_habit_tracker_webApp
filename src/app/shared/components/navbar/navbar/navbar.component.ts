@@ -7,7 +7,7 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
 import { DataSharingService } from '../../../services/data-sharing.service';
 import { ImportHabitsDoneMessageComponent } from "../../import-habits-done-message/import-habits-done-message.component";
 import { filter } from 'rxjs';
-import { Dropbox } from 'dropbox';
+import { DropboxUploadServiceService } from '../../../../core/services/dropbox-upload-service.service';
 
 declare var bootstrap: any;
 
@@ -31,15 +31,13 @@ export class NavbarComponent {
   @ViewChild('ExportHabitModal') exportHabitModal!: ElementRef;
   private _bootstrapExportHabitModalInstance: any;
   showImportDoneMessage: boolean = false;
-  dbxMain: Dropbox = new Dropbox();
 
 
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
     private _dataSharing: DataSharingService,
+    private _dropboxService: DropboxUploadServiceService,
     private router: Router) {
-    let accessToken = "sl.u.AF3IQQTMnxDV-z_78zxs9-SsjvIDtxWEItYqJqYq1b0e9Ylyxg-B3eGHGfvl5w0YA3nHLN6W7ZNWXH-J_TDq3jeVXD2aTOLOGW8pk_BCB2b3kVaXPvD_N6DYzCs05NhtGSD-xUrJ9xydKpvWhb8ZltHRYMuZPg1joS0H2V1JU1V5ZGPyy74DUE4091-e_mjzHIq-AJ2GWFpgXtQF0ciWPxC6a4L9z_sKsEmDZjWeIGPk05BK19cCbfbM3IXKPa6hlMoj-YsSirTcMf5HWlKHtNDbKxv8d6c8pg4kU8evXnl865MOEtPzEdk4lf57I38-bJzQw2IXOLgJntwuDEijcPYGqovC2MxRGHUkYVxqg5d4Oab-M-kg9kRD4hea4cx_C40Y9YCAvnk40BM6-8YFhzHEpUD5xipsPg8vYVzkVhSR2MFuMZipAqULNUlXfyMCe2UiA-f3WPzrLumilbXi7uLl6S6xXYCzMz3VIgcqPqyty0qKoQabU4ExPguL7K2wsMyUZliZssBbt4D70seJA70r9i_hOGeHBoRVyMIo5lZ7z0ZBBncaaNLA-8IqxhLV2OCdm43YEglJqEb-2kVjOIhd8BwXhmEMWf-CLXEeKL1SRZp8uyl2L8DYCvfUiKWH5cK1mXEnh-QPFgDsuBSWAzVfLJhFRwh34yYLuwXvS7r4F_xAnTV-dQK4vwJlc-3GK3768XfibfT4CjZTcruJTztD25YYHLgoO1ZVNGC_K-rIy12KOFQIL04AiEPB6vYOejPH70n2Q53ZOojxpU9kvy6NKLNqqqm-oropPaVmxMozFsVbtbf_HYCFhxC5q83Megu_biM2-LiIDRVYTtLaT2rnNhWrkpbWYpGoFt28zucS1CdVU2-SJdN4m0DxWfeNRJ2bXMiQymMN_Ez36e6golZ40QtksfplmzhcTlgyigaSiy0FWQSnv6WXf3lZudRU619P3lHn4ce_0__LKFL0p3yr1p3eWVX6XbYLEM-Ya_3VhjSJrl0yua_KvAd8e1dJOVQddtXRXMiM-3sZCPsFVneJj7rcrIpVedFsBVgXVmbGeaJfhoHnMDo8l56W42gorkZfC8w60sBSrnS-YWYAj9glKDrtM5Jk-nq_hyxkucqmMiSKZtVi1_d85i3VAbOF96q_LLMlX401k6HVNj8qum5pP3YwoQpFS2Af1gsjheEIkxmkoFcW-gvpOyAEFJDBq2FyKPIswsYgDW8wbDOtbSC33A51weVNvg7M_bnWcYdYbN6ec8Lc4eY9-R7TcorEOxYqflXLvzaSakiaMB4WobV2"
-    this.dbxMain = new Dropbox({ accessToken: accessToken });
   }
 
   ngOnInit(): void {
@@ -57,25 +55,31 @@ export class NavbarComponent {
   }
 
   initializeDropboxSignIn(): void {
-    this.getAuthUrl();
+
+    this._dropboxService.abcRequest().subscribe((value: any) => {
+      console.log(value);
+      console.log('asdnsjakdnsajkd');
+    });
+
+    // this.getAuthUrl();
   }
 
   getAuthUrl() {
-    this.dbxMain?.usersGetCurrentAccount()
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    // this.dbxMain?.usersGetCurrentAccount()
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   });
 
-    this.dbxMain?.filesListFolder({ path: '' })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    // this.dbxMain?.filesListFolder({ path: '' })
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   });
   }
 
   _loadingSpinnerInitialize(): void {
