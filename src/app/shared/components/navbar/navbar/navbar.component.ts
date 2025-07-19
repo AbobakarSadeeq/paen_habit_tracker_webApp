@@ -41,7 +41,7 @@ export class NavbarComponent {
     private router: Router) { }
 
   ngOnInit(): void {
-
+    console.log("hi how are you i am fine and you!");
     // when navigation is end then assign the url to the currentUrl property on navbar and navbar view is static thats why adding everytime when navigation end.
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
