@@ -7,6 +7,7 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
 import { DataSharingService } from '../../../services/data-sharing.service';
 import { ImportHabitsDoneMessageComponent } from "../../import-habits-done-message/import-habits-done-message.component";
 import { filter } from 'rxjs';
+import { Dropbox } from 'dropbox';
 
 declare var bootstrap: any;
 
@@ -30,6 +31,8 @@ export class NavbarComponent {
   @ViewChild('ExportHabitModal') exportHabitModal!: ElementRef;
   private _bootstrapExportHabitModalInstance: any;
   showImportDoneMessage: boolean = false;
+  dbxMain: Dropbox | undefined;
+  access_token = "sl.u.AF1-N7ushT4ufYf9fd02gOvSt9lpejSrJP0l8RA8bqBwhTQuY1vgqTaVkoZ56yjExlh5jCD0JT_qJgsIQ3IBsT_Z2EdECaT8x4r45PJCLrd2EzEm_-Xu5HERlUoRfe_SfCwNgHf2J9KLVwtT9jdw-ZvS9b0Nboq2si3UeYuH8KHJdvktsPY4N5EKQu1KFRsR-kOTe81oDRww0kaqGvU5vgIj-5aDw2aasV_v_fMPfxps8eMthFxkaEuAPR0R17mQ0dqpD0QOimgE3mdofojitasZmCaY3UQS9kVdbgkDzRntbQ_HXSFUG4Swu2P26i94iio75rTacfnnuZ39OOnlpr8-jjB2N0PmtbfQcLWz3CemInQFB0JXALPl9m1pvMTbUk4KGpvT1rDhOV-0mV4pP68NPoYbAuKLZl0livtCbmRfBIM0_YklShouhimgfAtpxL3lPqVRyZDZUPepVN5xfDNJYaeABApYH-jxd6C73EbgoSOxXWw_TOv0ZI4D3PS4eRMJ-Rdc7HpZ02wui_NCqHQs0ntaSjTnFACiim7kBDjcMKkU2ete368FIO3yaNsv8pe9lpg1jWMPQJQWg98kiZjLzTHFy_S7lwmXdrjdqdkpSpu-LnQUdpyUHfFk8DRYFwAqkxqEMMgSFEW-QXSpVUblbzejA_MVpzPszazvt6vmsj21wZ4TbRKtPM543Ifkyb5DBvAaghqVBjx6TjIryJK14Z42qLV_7R6Izem5tlcuNNbAX0SroaChNiMFM5S0-cs_jzLcF1oToX3COi4TjSWWEIeDjJQupKHTkKmR-KZoVc__1CYDw-xSRocBqBFhU8hc1OznTSBgIeSzmS95VubtrKKuseFwLqNMrs0HINUDxzMKfmk2vFSHDX0iA8htJgyXL9L1EnYyRVLqIo68gHVULuJESJJ9IXiL0COs3AovB-OUQ06ri8qYBqNmigb-W37-glvCVx0H57afrY5pv7MRRSI-EVM5u5MU1Ur0KtCE1tNplrncgmOWfvpNqfd73m5iiOJjTgvq0EhSHwoYhP9MOA0Avqf8Dwy77fntmjDKrf-1ijdmy2Jn-UD4-bi4AmKu8aLS-VEfW4HU1r1B5V2gBUDBmQyKJB80jSQpZJbG2B9sHB9RPM0WLEk5rZsv9eyoGF0RN_PJrRzSDCfdJJgkz5lDeUM88TKo8mM2zpIotTfXGhXotSSVj9BwBwmYEuRxAJZRvTxMRojAy7YA5M7gG9Z3_DeW6zNCGObC4BfElKBN-TS8d3A0dOfuC_Dg1vdOWYrGxJPnu1g00XyBrhEU"
 
 
   constructor(private _habitService: HabitService,
@@ -48,6 +51,36 @@ export class NavbarComponent {
       });
 
     this._loadingSpinnerInitialize();
+    this.initializeDropboxSignIn();
+  }
+
+  initializeDropboxSignIn(): void {
+    debugger;
+    const dbx = new Dropbox({
+      accessToken: this.access_token
+    });
+    this.dbxMain = dbx;
+    this.getAuthUrl();
+
+  }
+
+  getAuthUrl() {
+
+    this.dbxMain?.usersGetCurrentAccount()
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+    this.dbxMain?.filesListFolder({ path: '' })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   _loadingSpinnerInitialize(): void {
