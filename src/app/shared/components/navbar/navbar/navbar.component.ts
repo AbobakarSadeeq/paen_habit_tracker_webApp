@@ -7,7 +7,8 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
 import { DataSharingService } from '../../../services/data-sharing.service';
 import { ImportHabitsDoneMessageComponent } from "../../import-habits-done-message/import-habits-done-message.component";
 import { filter } from 'rxjs';
-import { DropboxUploadServiceService } from '../../../../core/services/dropbox-upload-service.service';
+import { DropboxService } from '../../../../core/services/dropbox.service';
+import { LocalImportExportJsonHabitFileService } from '../../../../core/services/local-import-export-json-habit-file.service';
 
 declare var bootstrap: any;
 
@@ -36,118 +37,22 @@ export class NavbarComponent {
   constructor(private _habitService: HabitService,
     private _habitalCompletionService: HabitCompletionService,
     private _dataSharing: DataSharingService,
-    private _dropboxService: DropboxUploadServiceService,
+    private _dropboxService: DropboxService,
+    private _localImportExportJsonHabitFileService: LocalImportExportJsonHabitFileService,
     private router: Router) {
   }
 
   ngOnInit(): void {
-    console.log("hi how are you i am fine and you!");
-    // when navigation is end then assign the url to the currentUrl property on navbar and navbar view is static thats why adding everytime when navigation end.
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.currentUrl = event.url;
-        console.log(event.url);
-      });
-
-    this._loadingSpinnerInitialize();
-    this.initializeDropboxSignIn();
+    this.getCurrentRouteLocationStatus();
+    this.loadingSpinnerInitialize();
   }
 
-  initializeDropboxSignIn(): void {
+  // -----------------------------------------------------------------
 
-    this._dropboxService.abcRequest().subscribe((value: any) => {
-      console.log(value);
-      console.log('asdnsjakdnsajkd');
-    });
-
-    // this.getAuthUrl();
-  }
-
-  getAuthUrl() {
-    // this.dbxMain?.usersGetCurrentAccount()
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.error(error);
-    //   });
-
-    // this.dbxMain?.filesListFolder({ path: '' })
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.error(error);
-    //   });
-  }
-
-  _loadingSpinnerInitialize(): void {
-    this._dataSharing.showSpinnerSubject.subscribe((value: boolean) => {
-      if (!value) {
-        setTimeout(() => {
-          this.showSpinner = false;
-        }, 500)
-      }
-      this.showSpinner = true;
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this._bootstrapImportHabitModalInstance = new bootstrap.Modal(this.importHabitModalRef.nativeElement);
-    this._bootstrapExportHabitModalInstance = new bootstrap.Modal(this.exportHabitModal.nativeElement);
-
-  }
-
-  // export code
-
-  async exportHabitJson(): Promise<void> {
-    this._dataSharing.showSpinnerSubject.next(true);
-    // get only habits
-    let allHabitListForExportingFormat: any[] = await this._habitService.getAllHabitsForExportingJsonFileAsync();
-    // each habitId will be having ascending wise habitId
-    let assignNumberInOrderWiseToHabit: { [key: number]: number } = {};
-    let currentId = 1;
-    allHabitListForExportingFormat.forEach(singleHabit => {
-      if (assignNumberInOrderWiseToHabit[singleHabit.Id] == undefined) {
-        assignNumberInOrderWiseToHabit[singleHabit.Id] = currentId;
-        currentId++
-      }
-    });
-
-    let allHabitsCompletionListForExportingFormat = await this._habitalCompletionService.getAllHabitsCompleteionForExportingJsonFileAsync(assignNumberInOrderWiseToHabit);
-    let exportJsonFileFormateOfHabitsStore: any[] = [];
-    allHabitListForExportingFormat.forEach(singleHabit => {
-      exportJsonFileFormateOfHabitsStore.push(
-        {
-          'habitId': allHabitsCompletionListForExportingFormat?.[singleHabit.Id][0]['habitId'],
-          'name': singleHabit.name,
-          'color': singleHabit.color,
-          'description': singleHabit.description,
-          'imageUrl': singleHabit.imageUrl,
-          'createdAt': singleHabit.createdAt,
-          'habitCompletions': allHabitsCompletionListForExportingFormat?.[singleHabit.Id][0]['doneDate'] ?? []
-        }
-      );
-    });
-
-    this._downloadJsonFile(exportJsonFileFormateOfHabitsStore);
-    this._dataSharing.showSpinnerSubject.next(false);
+  // export-section
+  async exportActionAccept(): Promise<void> {
+    await this._localImportExportJsonHabitFileService.exportHabitJsonAsync();
     this.onCloseExportHabitModel();
-
-  }
-
-  _downloadJsonFile(data: any): void {
-    const today = new Date();
-    const dateTime = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}_${today.getHours().toString().padStart(2, '0')}-${today.getMinutes().toString().padStart(2, '0')}`;
-    const convertToString = JSON.stringify(data);
-    const blob = new Blob([convertToString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${dateTime}_PaenHabit.json`; // fileName
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   openExportHabitModel(): void {
@@ -158,11 +63,10 @@ export class NavbarComponent {
     this._bootstrapExportHabitModalInstance.hide();
   }
 
+
   // -----------------------------------------------------------------
 
-
-  // import code
-
+  // import-section
   isItImportFileIsInvalid: boolean = false;
   disableImportBtn = true;
   showConfirmationToAddImportHabits = false;
@@ -185,7 +89,7 @@ export class NavbarComponent {
     reader.onload = () => {
       try {
         const arrHabitsWithCompletions = JSON.parse(reader.result as string);
-        let resultFormated = this._formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions);
+        let resultFormated = this._localImportExportJsonHabitFileService.formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions);
         if (!resultFormated['isFileInCorrectFormat']) {
           this.isItImportFileIsInvalid = true;
           this.showConfirmationToAddImportHabits = false;
@@ -211,50 +115,36 @@ export class NavbarComponent {
     reader.readAsText(file);
   }
 
-  _formatedToStoreHabitsAndItsCompletion(arrHabitsWithCompletions: any[]): any {
-    let result: any = {
-      'habits': [],
-      'habitCompletions': [],
-      'isFileInCorrectFormat': false
-    }
-
-    for (var singleHabitWithItsCompletions of arrHabitsWithCompletions) {
-      let singleHabit = {
-        'name': singleHabitWithItsCompletions['name'],
-        'color': singleHabitWithItsCompletions['color'],
-        'description': singleHabitWithItsCompletions['description'],
-        'imageUrl': singleHabitWithItsCompletions['imageUrl'],
-        'createdAt': singleHabitWithItsCompletions['createdAt'],
-      }
-
-      if (singleHabit.name == undefined || singleHabit.color == undefined || singleHabit.createdAt == undefined) {
-        return result;
-      }
-
-      let mappedForToStoreInDbFormat: any[] = singleHabitWithItsCompletions['habitCompletions'].map((date: string) => ({
-        doneDate: date,
-        habitId: singleHabitWithItsCompletions['habitId'],
-      }));
-
-      let habitCompletions = [...result['habitCompletions'], ...mappedForToStoreInDbFormat];
-      result['habits'].push(singleHabit);
-      result['habitCompletions'] = habitCompletions;
-    }
-    result['isFileInCorrectFormat'] = true;
-    return result;
-  }
-
-  // on import model
-
   checkIsUserAgreeToImportHabits(event: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
-
     if (isChecked) {
       this.disableImportBtn = false;
     } else {
       this.disableImportBtn = true;
     }
 
+  }
+
+  async onAcceptActionImport(): Promise<void> {
+    await this._localImportExportJsonHabitFileService.onImportHabitsConfirmAsync(this.importData);
+
+    this.onCloseImportHabitModel();
+    setTimeout(() => {
+      this.showImportDoneMessage = true;
+    }, 1000)
+
+    setTimeout(() => {
+      this.showImportDoneMessage = false;
+      this._navigateOnImportToHome();
+    }, 4000)
+  }
+
+  _navigateOnImportToHome(): void {
+    // here when import is done then navigate to home page for to prevent errors.
+    if (this.currentUrl.startsWith('/habit')) {
+      console.log('imported new data and navigated to home successful!');
+      this.router.navigate(['']);
+    }
   }
 
   openImportHabitModel(): void {
@@ -270,56 +160,41 @@ export class NavbarComponent {
 
   }
 
-  async onImportHabitsConfirm(): Promise<void> {
-    this._dataSharing.showSpinnerSubject.next(true);
-    let resultFormated = this.importData;
-    // remove data from tables
-    await this._habitService.resetHabitAsync();
-    await this._habitalCompletionService.resetHabitCompletionAsync();
+  // -----------------------------------------------------------------
 
-    // stored data in bulk inside habit and return their primary keys where does it stored.
-    let primaryKeysStored = await this._habitService.bulkSaveHabitsAsync(resultFormated.habits);
-
-    // first any value of primary key == 1, second any value of primary key == 2
-    let habitNumberCompletionWise = 1;
-    for (var singleHabitCompletion of resultFormated['habitCompletions']) {
-      if (singleHabitCompletion['habitId'] == habitNumberCompletionWise) {
-        singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]; // assign primary key value here of to that habit completion where it equals to habitId
-      } else {
-        habitNumberCompletionWise = singleHabitCompletion['habitId'];
-        singleHabitCompletion['habitId'] = primaryKeysStored[habitNumberCompletionWise - 1]
-      }
-    }
-    await this._habitalCompletionService.bulkSaveHabitsCompletionAsync(resultFormated.habitCompletions);
-    this._dataSharing.showSpinnerSubject.next(false);
-    this.onCloseImportHabitModel();
-    this._dataSharing.refreshHabitsAfterImport.next(true);
-
-
-    setTimeout(() => {
-      this.showImportDoneMessage = true;
-    }, 1000)
-
-    setTimeout(() => {
-      this.showImportDoneMessage = false;
-      this._navigateOnImportToHome();
-    }, 4000)
-
-  }
-
-  _navigateOnImportToHome(): void {
-    // here when import is done then navigate to home page for to prevent errors.
-    if (this.currentUrl.startsWith('/habit')) {
-      console.log('imported new data and navigated to home successful!');
-      this.router.navigate(['']);
-    }
+  // refresh habits on click
+  refreshHabitsOnClick(): void {
+    this._dataSharing.refreshHabitsOnRefreshBtn.next(true);
   }
 
   // -----------------------------------------------------------------
 
-  // refresh habits on click
+  // loading spinner initializing
+  loadingSpinnerInitialize(): void {
+    this._dataSharing.showSpinnerSubject.subscribe((value: boolean) => {
+      if (!value) {
+        setTimeout(() => {
+          this.showSpinner = false;
+        }, 500)
+      }
+      this.showSpinner = true;
+    });
+  }
 
-  refreshHabitsOnClick(): void {
-    this._dataSharing.refreshHabitsOnRefreshBtn.next(true);
+  // -----------------------------------------------------------------
+
+  // import and export models initializing
+  ngAfterViewInit(): void {
+    this._bootstrapImportHabitModalInstance = new bootstrap.Modal(this.importHabitModalRef.nativeElement);
+    this._bootstrapExportHabitModalInstance = new bootstrap.Modal(this.exportHabitModal.nativeElement);
+  }
+
+  // -----------------------------------------------------------------
+
+  // current location of route status
+  getCurrentRouteLocationStatus(): void {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      this.currentUrl = event.url;
+    });
   }
 }

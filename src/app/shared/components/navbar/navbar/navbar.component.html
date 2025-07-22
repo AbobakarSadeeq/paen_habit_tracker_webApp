@@ -67,7 +67,7 @@
       <div class="modal-footer" style="border-top: none !important;">
         <button type="button" class="btn btn-outline-secondary py-1 px-2"
           (click)="onCloseExportHabitModel()">Close</button>
-        <button type="button" class="btn btn-primary py-1 px-2" (click)="exportHabitJson()">Export Habits</button>
+        <button type="button" class="btn btn-primary py-1 px-2" (click)="exportActionAccept()">Export Habits</button>
       </div>
     </div>
   </div>
@@ -99,7 +99,7 @@
       <div class="modal-footer" style="border-top: none !important;">
         <button type="button" class="btn btn-outline-secondary py-1 px-2"
           (click)="onCloseImportHabitModel()">Close</button>
-        <button type="button" class="btn btn-danger py-1 px-2" (click)="onImportHabitsConfirm()"
+        <button type="button" class="btn btn-danger py-1 px-2" (click)="onAcceptActionImport()"
           [disabled]="disableImportBtn">Import Habits</button>
       </div>
     </div>
