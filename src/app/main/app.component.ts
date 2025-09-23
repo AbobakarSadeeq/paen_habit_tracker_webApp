@@ -11,8 +11,5 @@ import { RouterModule } from '@angular/router';
 export class AppComponent {
   title = 'paen_habit_tracker_webApp';
 
-  gotoHome(): void {
 
-
-  }
 }
