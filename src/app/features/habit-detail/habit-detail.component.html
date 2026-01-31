@@ -13,84 +13,99 @@
 
   <div class="parent-container-of-contribution-calender-and-stats-cards">
 
-    <!-- calender of stats -->
+    <div class="first-column">
 
-    <div class="contribution-calender">
+      <!-- calender of stats -->
+      <div class="contribution-calender">
+        <div class="contribution-calender-with-habit-name">
+          <h3 class="habit-name">{{habitDetailViewModel.name}}</h3>
+          <app-habit-done-days-calender [doneCompletionsColorOnDates]="habitDetailViewModel.color"
+            [specialDates]="onlyDatesOfCompletionForCalender"
+            (triggerOfChangingMonthInHabitDetail)="changeStatisByChangeInCalenderMonth($event)"></app-habit-done-days-calender>
+        </div>
+      </div>
 
-      <div class="contribution-calender-with-habit-name">
-        <p class="habit-name">{{habitDetailViewModel.name}}</p>
-        <app-habit-done-days-calender [doneCompletionsColorOnDates]="habitDetailViewModel.color"
-          [specialDates]="onlyDatesOfCompletionForCalender"
-          (triggerOfChangingMonthInHabitDetail)="changeStatisByChangeInCalenderMonth($event)"></app-habit-done-days-calender>
+      <!-- habit image section -->
+      <div class="habit-image-section">
+        <h3>Image</h3>
+        <img [src]="habitDetailViewModel.imageUrl" width="100%" height="100%" alt="">
       </div>
 
     </div>
 
-    <!-- cards of stats -->
-    <div class="parent-container-of-stats-card">
+    <div class="second-column">
 
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{selectedHabitId}}</span>
-          <span class="stats-value-name">Id</span>
-        </p>
-        <p class="header-name">Current habit id</p>
+      <!-- cards of stats -->
+      <div class="parent-container-of-stats-card">
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{selectedHabitId}}</span>
+            <span class="stats-value-name">Id</span>
+          </p>
+          <p class="header-name">Current habit id</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{selectedHabitStreak.streak}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">Current steak</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{longestStreakOfThisHabit}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">Longest Streak Days</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{selectedYearHabitCompletionsDoneCount}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">Completed in this Year</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisCurrentWeek}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">Completed this week</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisMonth}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">In this Month</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span
+              class="stats-value">{{totalEntireHabitCompletionsDoneCountOfSelectedHabit}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">In Total of this habit</p>
+        </div>
+
+        <div class="card">
+          <p class="stats-parent"><span class="stats-value">{{averageWeeklyCompletion}}</span>
+            <span class="stats-value-name">Days</span>
+          </p>
+          <p class="header-name">Average weekly</p>
+        </div>
+
+
       </div>
 
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{selectedHabitStreak.streak}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">Current steak</p>
+      <!-- Description note section -->
+      <div class="description-note-section">
+        <h3>Description Note</h3>
+        <div [innerHTML]="habitDescriptionForInnerHtml"></div>
       </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{longestStreakOfThisHabit}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">Longest Streak Days</p>
-      </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{selectedYearHabitCompletionsDoneCount}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">Completed in this Year</p>
-      </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisCurrentWeek}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">Completed this week</p>
-      </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{completedSelectedHabitTimesThisMonth}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">In this Month</p>
-      </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{totalEntireHabitCompletionsDoneCountOfSelectedHabit}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">In Total of this habit</p>
-      </div>
-
-      <div class="card">
-        <p class="stats-parent"><span class="stats-value">{{averageWeeklyCompletion}}</span>
-          <span class="stats-value-name">Days</span>
-        </p>
-        <p class="header-name">Average weekly</p>
-      </div>
-
 
     </div>
 
   </div>
 
-
 </div>
-<!-- <h1>description: {{habitDetailViewModel.description}}</h1>
-    <h1>imageUrl: {{habitDetailViewModel.imageUrl}}</h1> -->

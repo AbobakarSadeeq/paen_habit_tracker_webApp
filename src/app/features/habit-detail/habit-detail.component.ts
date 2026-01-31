@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { DataSharingService } from '../../shared/services/data-sharing.service';
 import { HabitDoneDaysCalenderComponent } from './habit-done-days-calender/habit-done-days-calender.component';
 import { HabitCompletionViewModel } from '../../presentation/view-models/habit-completion.view-model';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-habit-detail',
@@ -39,6 +40,7 @@ export class HabitDetailComponent {
     createdAt: '',
     isHabitDoneToday: false
   };
+  habitDescriptionForInnerHtml!: SafeHtml;
 
   onlyDatesOfCompletionForCalender: { day: number; month: number; year: number }[] = [];
 
@@ -52,7 +54,12 @@ export class HabitDetailComponent {
   selectedHabitStreak: any = {};
   totalEntireHabitCompletionsDoneCountOfSelectedHabit: number = 0;
 
-  constructor(private _habitCompletionService: HabitCompletionService, private _habitService: HabitService, @Inject(ActivatedRoute) private _routeActivate: ActivatedRoute, private _dataSharing: DataSharingService) { }
+  constructor(private _habitCompletionService: HabitCompletionService,
+    private _habitService: HabitService,
+    @Inject(ActivatedRoute) private _routeActivate: ActivatedRoute,
+    private _dataSharing: DataSharingService,
+    private sanitizer: DomSanitizer
+  ) { }
 
   async ngOnInit(): Promise<void> {
     await this._initializeHabitsDetailCompletionsAsync();
@@ -60,13 +67,13 @@ export class HabitDetailComponent {
 
   async _initializeHabitsDetailCompletionsAsync(): Promise<void> {
     this._dataSharing.showSpinnerSubject.next(true);
-
     this.assignDatesToStartAndEndDates(new Date());
 
     let habitId: number = parseInt(this._routeActivate.snapshot.params['Id']);
     this.selectedHabitId = habitId;
 
     this.habitDetailViewModel = await this._habitService.getHabitByIdAsync(habitId);
+    this.habitDescriptionForInnerHtml = this.sanitizer.bypassSecurityTrustHtml(this.habitDetailViewModel.description);
 
     this.selectedYear = new Date().getFullYear();
     this.allContributionCountsAndWithTheirDatesData = await this._habitCompletionService.getDataForSingleHabitContributionGridByHabitIdAndSelectedYearAsync(habitId, this.selectedYear.toString());

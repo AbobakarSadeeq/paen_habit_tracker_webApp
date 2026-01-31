@@ -15,6 +15,14 @@
   font-weight: 800;
 }
 
+.first-column {
+  max-width: 14em;
+}
+
+.second-column {
+  margin: 1.4em 2em;
+}
+
 .contribution-calender {
   margin-top: 1em;
   width: 14em; /*   min and max both are same here   */
@@ -22,7 +30,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: auto;
-  height: max-content;
+  /* height: max-content; */
 }
 
 .contribution-calender-with-habit-name {
@@ -32,14 +40,38 @@
   text-align: center;
 }
 
+.habit-image-section {
+  margin-top: 1em;
+  /* background-color: red; */
+}
+
+.habit-image-section h3 {
+  text-align: center;
+  font-weight: 1000;
+}
+
 .habit-name {
-  font-size: 2em;
+  font-weight: 1000;
 }
 
 /* parent of stats and contribution both */
 
+.parent-container-of-stats-card {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  /* margin: 1.4em 2em; */
+}
+
 .parent-container-of-contribution-calender-and-stats-cards {
   display: flex;
+}
+
+.description-note-section {
+}
+
+.description-note-section h3 {
+  font-weight: 1000;
 }
 
 /* boxes for each stats */
@@ -75,14 +107,6 @@
   font-size: 0.7em;
 }
 
-.parent-container-of-stats-card {
-  display: flex;
-  gap: 1em;
-
-  flex-wrap: wrap;
-  margin: 1.4em 2em;
-}
-
 /* here break down the calender and all statistics of habit */
 
 @media (max-width: 1472px) {
@@ -99,13 +123,28 @@
     display: block;
   }
 
+  .first-column {
+    margin: auto;
+    margin-bottom: 1em;
+  }
+
+  .second-column {
+  }
+
+  .description-note-section {
+    margin-top: 1em;
+  }
+
   .contribution-calender {
     /* background-color: red; */
     margin: 1em auto;
   }
 
+  .description-note-section h3 {
+    text-align: center;
+  }
+
   .parent-container-of-stats-card {
-    margin: 1em auto;
     justify-content: center;
   }
 }
@@ -118,7 +157,6 @@
   .contribution-calender {
     background-color: paleturquoise;
   } */
-
 
   .card {
     height: 7.4em;
