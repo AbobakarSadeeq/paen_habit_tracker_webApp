@@ -26,10 +26,12 @@
       </div>
 
       <!-- habit image section -->
-      <div class="habit-image-section">
+      @if(this.habitDetailViewModel.imageUrl.length > 0) {
+      <div class="habit-image-section" (click)="openHabitImage()">
         <h3>Image</h3>
         <img [src]="habitDetailViewModel.imageUrl" width="100%" height="100%" alt="">
       </div>
+      }
 
     </div>
 
@@ -99,13 +101,26 @@
       </div>
 
       <!-- Description note section -->
+      @if(this.habitDetailViewModel.description.length > 0){
       <div class="description-note-section">
         <h3>Description Note</h3>
         <div [innerHTML]="habitDescriptionForInnerHtml"></div>
       </div>
+      }
 
     </div>
 
   </div>
 
+</div>
+
+
+<!-- Open image in dialog -->
+<div class="modal fade bd-example-modal-lg" #HabitImageModel tabindex="-1" role="dialog"
+  aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <img [src]="habitDetailViewModel.imageUrl" width="100%" height="100%" alt="">
+    </div>
+  </div>
 </div>

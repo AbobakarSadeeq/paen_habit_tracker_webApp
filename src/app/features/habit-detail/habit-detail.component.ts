@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { HabitCompletionService } from '../../core/services/habit-completion.service';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { HabitViewModel } from '../../presentation/view-models/habit.view-model';
@@ -9,6 +9,8 @@ import { DataSharingService } from '../../shared/services/data-sharing.service';
 import { HabitDoneDaysCalenderComponent } from './habit-done-days-calender/habit-done-days-calender.component';
 import { HabitCompletionViewModel } from '../../presentation/view-models/habit-completion.view-model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-habit-detail',
@@ -219,6 +221,21 @@ export class HabitDetailComponent {
 
       await this.getCountOfSelectedHabitAllCompletionOfSelectedYearAsync();
     }
+  }
+
+  // image open and close model
+
+  @ViewChild('HabitImageModel') habitImageModalRef!: ElementRef;
+  private _bootstraImagepModalInstance: any;
+  openHabitImage() {
+    if (this.habitDetailViewModel.imageUrl.length > 0) {
+      // if image found then open the image otherwise dont.
+      this._bootstraImagepModalInstance.show();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this._bootstraImagepModalInstance = new bootstrap.Modal(this.habitImageModalRef.nativeElement);
   }
 
 

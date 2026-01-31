@@ -45,6 +45,10 @@
   /* background-color: red; */
 }
 
+.habit-image-section img {
+  cursor: pointer;
+}
+
 .habit-image-section h3 {
   text-align: center;
   font-weight: 1000;
